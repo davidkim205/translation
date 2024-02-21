@@ -1,9 +1,9 @@
 from transformers import AutoModelForSeq2SeqLM, AutoTokenizer
-
-tokenizer = AutoTokenizer.from_pretrained("facebook/nllb-200-distilled-1.3B", device_map="auto")
-model = AutoModelForSeq2SeqLM.from_pretrained("facebook/nllb-200-distilled-1.3B")
-
 from utils.bleu_score import simple_score
+
+model = AutoModelForSeq2SeqLM.from_pretrained("facebook/nllb-200-distilled-1.3B", device_map="auto")
+tokenizer = AutoTokenizer.from_pretrained("facebook/nllb-200-distilled-1.3B", device_map="auto")
+
 
 
 def translate_ko2en(text):
@@ -23,7 +23,7 @@ def translate_en2ko(text):
 
     translated_tokens = model.generate(
         **inputs, forced_bos_token_id=tokenizer.lang_code_to_id["kor_Hang"], max_new_tokens=2048)
-    )
+
     result = tokenizer.batch_decode(translated_tokens, skip_special_tokens=True)[0]
     return result
 
