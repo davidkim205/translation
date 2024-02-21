@@ -43,6 +43,8 @@ def main():
         from models.mbart50 import translate_en2ko, translate_ko2en
     elif args.mode=="nllb200":
         from models.nllb200 import translate_ko2en, translate_en2ko
+    elif args.mode=="TowerInstruct":
+        from models.TowerInstruct import translate_ko2en, translate_en2ko
 
     result=[]
     for data in tqdm(json_data):
