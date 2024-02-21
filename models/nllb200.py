@@ -1,7 +1,9 @@
 from transformers import AutoModelForSeq2SeqLM, AutoTokenizer
 from utils.bleu_score import simple_score
+import torch
 
-model = AutoModelForSeq2SeqLM.from_pretrained("facebook/nllb-200-distilled-1.3B", device_map="auto")
+
+model = AutoModelForSeq2SeqLM.from_pretrained("facebook/nllb-200-distilled-1.3B", torch_dtype=torch.bfloat16, device_map="auto")
 tokenizer = AutoTokenizer.from_pretrained("facebook/nllb-200-distilled-1.3B")
 
 

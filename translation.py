@@ -56,7 +56,7 @@ def main():
             #print('ko_text', ko_text)
             conversation['ko'] = ko_text
             conversation['en'] = en_text
-        data['translation'] = 'args.model'
+        data['translation'] = args.model
         result.append(data)
 
     save_json(result, f'llm_ko_datasets/conversation_arc_{args.model}.jsonl')
