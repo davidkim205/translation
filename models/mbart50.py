@@ -19,7 +19,7 @@ def translate_ko2en(text):
 def translate_en2ko(text):
     tokenizer.src_lang = "en_XX"
     input_ids = tokenizer(text, return_tensors="pt").input_ids.to(model.device)
-    outputs = model.generate(input_ids=input_ids, forced_bos_token_id=tokenizer.lang_code_to_id["ko_KR"], max_new_tokens=2048))
+    outputs = model.generate(input_ids=input_ids, forced_bos_token_id=tokenizer.lang_code_to_id["ko_KR"], max_new_tokens=2048)
 
     outputs = tokenizer.decode(outputs[0], skip_special_tokens=True)
 
