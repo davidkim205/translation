@@ -41,7 +41,7 @@ def main():
         from models.madlad400 import translate_ko2en,translate_en2ko
     elif args.model=="mbart50":
         from models.mbart50 import translate_en2ko, translate_ko2en
-    elif args.mode=="nllb200":
+    elif args.model=="nllb200":
         from models.nllb200 import translate_ko2en, translate_en2ko
 
     result=[]
@@ -56,7 +56,7 @@ def main():
             conversation['en'] = en_text
         data['translation'] = 'args.model'
         result.append(data)
-        break
+
     save_json(result, f'llm_ko_datasets/conversation_arc_{args.model}.jsonl')
 
 
