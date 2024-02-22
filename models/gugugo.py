@@ -1,9 +1,10 @@
 from transformers import AutoModelForCausalLM, AutoTokenizer, StoppingCriteria, StoppingCriteriaList
 import torch
 from utils.bleu_score import simple_score
+import torch
 
 repo = "squarelike/Gugugo-koen-7B-V1.1"
-model = AutoModelForCausalLM.from_pretrained(repo, device_map='auto')
+model = AutoModelForCausalLM.from_pretrained(repo, torch_dtype=torch.bfloat16, device_map='auto')
 tokenizer = AutoTokenizer.from_pretrained(repo)
 
 

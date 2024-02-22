@@ -1,8 +1,9 @@
 from transformers import T5ForConditionalGeneration, T5Tokenizer
 from utils.bleu_score import simple_score
+import torch
 
 model_name = 'jbochi/madlad400-10b-mt'
-model = T5ForConditionalGeneration.from_pretrained(model_name, device_map="auto")
+model = T5ForConditionalGeneration.from_pretrained(model_name, torch_dtype=torch.bfloat16, device_map="auto")
 tokenizer = T5Tokenizer.from_pretrained(model_name)
 
 

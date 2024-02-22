@@ -12,5 +12,5 @@ pip install -r requirements.txt
 ### example
 ``` 
 
-python translation.py --input_file ./llm_datasets/conversation_arc.jsonl --model gugugo
+CUDA_VISIBLE_DEVICES=0 python translation.py --input_file ./llm_datasets/conversation_arc.jsonl --model gugugo
 ```
