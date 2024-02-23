@@ -19,7 +19,7 @@ def load_json(filename):
         else:
             for line in f:
                 json_data.append(json.loads(line))
-    return json_data[:2]
+    return json_data
 
 
 # 파일이 존재하면 마지막 줄 뒤에 추가합니다.
