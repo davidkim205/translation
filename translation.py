@@ -23,9 +23,9 @@ def load_json(filename):
 
 
 # 파일이 존재하면 마지막 줄 뒤에 추가합니다.
-def save_json(json_data, filename):
+def save_json(json_data, filename, option="w"):
     filename = filename.replace(' ', '_')
-    with open(filename, "a", encoding="utf-8") as f:
+    with open(filename, option, encoding="utf-8") as f:
         if not filename.endswith('.jsonl'):
             json.dump(json_data, f, ensure_ascii=False, indent=4)
         else:
@@ -88,22 +88,29 @@ def main():
                     result.append(data)
             except IndexError:
                 break
+        # 저장
+        if result:
+            save_json(result, gen_output_filename(args.input_file, args.model, "a"))
     # 로컬 모델 사용
     else:
         for data in tqdm(json_data):
             for conversation in data['conversations']:
                 text = conversation['value']
                 #print(text)
-                ko_text = translate_en2ko(text)
-                en_text = translate_ko2en(ko_text)
+                try:
+                    ko_text = translate_en2ko(text)
+                    en_text = translate_ko2en(ko_text)
+                except:
+                    ko_text = ""
+                    en_text = ""
                 #print('ko_text', ko_text)
                 conversation['ko'] = ko_text
                 conversation['en'] = en_text
             data['translation'] = args.model
             result.append(data)
-    # 저장
-    if result:
-        save_json(result, gen_output_filename(args.input_file, args.model))
+        # 저장
+        if result:
+            save_json(result, gen_output_filename(args.input_file, args.model))
 
 
 if __name__ == "__main__":
