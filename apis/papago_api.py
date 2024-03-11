@@ -10,6 +10,7 @@ request.add_header("X-NCP-APIGW-API-KEY",client_secret)
 
 
 def translate_en2ko(text):
+    return False
     encText = urllib.parse.quote(text)
     data = "source=en&target=ko&text=" + encText
     try:

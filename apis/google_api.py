@@ -5,8 +5,9 @@ client = translate.Client(client_options={"api_key": "AIzaSyA4dTP95X5hhPZ-UptV_5
 
 
 def translate_en2ko(text):
+    # return False
     try:
-        result = unescape(client.translate(text, source_language="en", target_language="ko"))
+        result = client.translate(text, source_language="en", target_language="ko")
         return result["translatedText"]
     except:
         return False

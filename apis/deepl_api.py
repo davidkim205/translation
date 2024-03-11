@@ -5,6 +5,7 @@ translator = deepl.Translator(auth_key)
 
 
 def translate_en2ko(text):
+    return False
     try:
         result = translator.translate_text(text, target_lang="KO")
         return result.text
