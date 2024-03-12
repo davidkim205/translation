@@ -18,4 +18,8 @@ llm_ko_datasets/ko_conversation_arc_madlad400.jsonl filter=lfs diff=lfs merge=lf
 llm_ko_datasets/ko_conversation_arc_mbart50.jsonl filter=lfs diff=lfs merge=lfs -text
 llm_ko_datasets/ko_conversation_arc_nllb200.jsonl filter=lfs diff=lfs merge=lfs -text
 llm_ko_datasets/ko_conversation_arc_TowerInstruct.jsonl filter=lfs diff=lfs merge=lfs -text
+llm_datasets/conversation_mmlu.jsonl filter=lfs diff=lfs merge=lfs -text
+llm_datasets/conversation_truthfulqa-mc1.jsonl filter=lfs diff=lfs merge=lfs -text
+llm_datasets/conversation_arc.jsonl filter=lfs diff=lfs merge=lfs -text
+llm_datasets/conversation_hellaswag.jsonl filter=lfs diff=lfs merge=lfs -text
 llm_datasets/MetaMathQA-395K.jsonl filter=lfs diff=lfs merge=lfs -text
