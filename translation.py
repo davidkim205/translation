@@ -208,9 +208,9 @@ def main():
             "openorca": translate_openorca,
         }
     local_translate = {
-        "mathqa": translate_mathqa,
-        "python_code": translate_python_code,
-        "openorca": translate_openorca,
+        "MetaMathQA-395K": translate_mathqa,
+        "python-codes-25k": translate_python_code,
+        "OpenOrca": translate_openorca,
     }
     # 번역 API 사용
     if args.model == "cloud_api":
@@ -233,9 +233,10 @@ def main():
                 break
     # 로컬 모델 사용
     else:
-        output_filename = gen_output_filename(args.input_file, args.model)
+        input_filename = f"/work/translation/llm_datasets/{args.dataset}.jsonl"
+        output_filename = gen_output_filename(input_filename, args.model)
         line_count = get_line_count(output_filename)
-        json_data = load_json(args.input_file, line_count)
+        json_data = load_json(input_filename, line_count)
         for data in tqdm(json_data):
             local_translate[args.dataset](translate_en2ko, translate_ko2en, data)
             save_json([data], output_filename)
