@@ -1,28 +1,26 @@
 from nltk.translate.bleu_score import sentence_bleu
-from nltk.tokenize import word_tokenize, WhitespaceTokenizer
+from nltk.tokenize import word_tokenize
 import re
 
-tokenizer = WhitespaceTokenizer()
+
 def simple_score(text1, text2):
-    text1 = re.sub(r'\n+', ' ', text1)
-    text1 = re.sub(r'\#\#\#', ' ', text1)
-    text2 = re.sub(r'\n+', ' ', text2)
-    text2 = re.sub(r'\#\#\#', ' ', text2)
+    text1 = re.sub(r"\n+", " ", text1)
+    text2 = re.sub(r"\n+", " ", text2)
     reference = list(map(lambda x: x.lower(), word_tokenize(text1)))
-    print(reference)
+    # print(reference)
     candidate = list(map(lambda x: x.lower(), word_tokenize(text2)))
-    print(candidate)
+    # print(candidate)
     base = sentence_bleu([reference], reference)
-    print(base)
+    # print(base)
     score = sentence_bleu([reference], candidate)
-    print(score)
+    # print(score)
     return score
 
 
 def main():
     while True:
-        ref = input('>')
-        cand = input('>')
+        ref = input(">")
+        cand = input(">")
         score = simple_score(ref, cand)
         print(score)
 
