@@ -20,14 +20,21 @@ def load_json(filename, n):
             json_data = json.load(f)
         else:
             for i, line in enumerate(f):
-                if i >= n:
+                if i < n:
+                    continue
+                elif i >= n + 100:
                     break
                 json_data.append(json.loads(line))
     return json_data
 
 
+def get_line_count(filename):
+    with open(filename, "r", encoding="utf-8") as f:
+        return sum(1 for _ in f)
+
+
 # 파일이 존재하면 마지막 줄 뒤에 추가합니다.
-def save_json(json_data, filename, option="w"):
+def save_json(json_data, filename, option="a"):
     filename = filename.replace(" ", "_")
     with open(filename, option, encoding="utf-8") as f:
         if not filename.endswith(".jsonl"):
@@ -170,10 +177,6 @@ def main():
     )
     args = parser.parse_args()
 
-    json_data = load_json(args.input_file, 100)
-
-    result = []
-    removed_data_count = 0
     if args.model == "gugugo":
         from models.gugugo import translate_en2ko, translate_ko2en
     elif args.model == "madlad400":
@@ -231,9 +234,12 @@ def main():
     # 로컬 모델 사용
     else:
         output_filename = gen_output_filename(args.input_file, args.model)
-
+        line_count = get_line_count(output_filename)
+        json_data = load_json(args.input_file, line_count)
         for data in tqdm(json_data):
             local_translate[args.dataset](translate_en2ko, translate_ko2en, data)
+            save_json([data], output_filename)
+
             # for conversation in data['conversations']:
             #     text = conversation['value']
             #     #print(text)
@@ -247,7 +253,6 @@ def main():
             #     conversation['ko'] = ko_text
             #     conversation['en'] = en_text
             # data['translation'] = args.model
-            save_json([data], output_filename, "a")
 
 
 if __name__ == "__main__":

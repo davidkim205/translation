@@ -17,10 +17,17 @@ def load_json(filename, n):
             json_data = json.load(f)
         else:
             for i, line in enumerate(f):
-                if i >= n:
+                if i < n:
+                    continue
+                elif i >= n + 100:
                     break
                 json_data.append(json.loads(line))
     return json_data
+
+
+def get_line_count(filename):
+    with open(filename, "r", encoding="utf-8") as f:
+        return sum(1 for _ in f)
 
 
 # 파일이 존재하면 마지막 줄 뒤에 추가합니다.
@@ -36,9 +43,6 @@ def save_json(json_data, filename, option="a"):
 
 
 def main():
-    # parser = argparse.ArgumentParser("argument")
-    # parser.add_argument("--input_file", default="./llm_ko_datasets/conversation_arc_nllb200.jsonl", type=str, help="input_file")
-    # args = parser.parse_args()
     dataset_attr = {
         "MetaMathQA-395K": ["original_question", "response", "query"],
         "OpenOrca": ["system_prompt", "question", "response"],
@@ -51,36 +55,18 @@ def main():
         "nllb200": {},
         "TowerInstruct": {},
     }
-    # for dataset in dataset_attr:
-    #     filename = f"llm_datasets/{dataset}.jsonl"
-    #     data = load_json(filename, 100)
-    #     origin_filename = f"llm_datasets_bleu/{dataset}.jsonl"
-    #     origin_data = load_json(origin_filename, 100)
-    #     df = pd.DataFrame(origin_data)
-    #     df.to_excel(f"{dataset}_temp.xlsx", index=False)
-    #     for i, row in enumerate(data):
-    #         for attr in dataset_attr[dataset]:
-    #             row[f"bleu_{attr}"] = -1
-    #             for j in range(5):
-    #                 index = i + j * 100
-    #                 if (
-    #                     f"bleu_{attr}" in origin_data[index]
-    #                     and row[f"bleu_{attr}"] < origin_data[index][f"bleu_{attr}"]
-    #                 ):
-    #                     row[f"ko_{attr}"] = origin_data[index][f"ko_{attr}"]
-    #                     row[f"en_{attr}"] = origin_data[index][f"en_{attr}"]
-    #                     row[f"bleu_{attr}"] = origin_data[index][f"bleu_{attr}"]
-    #                     row[f"bleu_{attr}_model"] = list(model_score.keys())[j]
-    #         save_json([row], f"{dataset}_temp.jsonl")
 
     for dataset in dataset_attr:
         origin_filename = f"llm_datasets/{dataset}.jsonl"
-        origin_data = load_json(origin_filename, 100)
+        bleu_filename = f"llm_datasets_bleu/{dataset}.jsonl"
+        bleu_line_count = get_line_count(bleu_filename)
+        origin_data = load_json(origin_filename, bleu_line_count)
         json_data_list = {}
+
         for model in model_score:
             filename = gen_filename(dataset, model)
             try:
-                json_data_list[model] = load_json(filename, 100)
+                json_data_list[model] = load_json(filename, bleu_line_count)
             except FileNotFoundError as e:
                 print(e)
                 continue
@@ -99,9 +85,9 @@ def main():
                         bleu.append(score)
                 # save_json([row], filename)
 
-            model_score[model][dataset] = {
-                "avg_bleu": sum(bleu) / len(bleu) if bleu else 0,
-            }
+            # model_score[model][dataset] = {
+            #     "avg_bleu": sum(bleu) / len(bleu) if bleu else 0,
+            # }
         for i, row in enumerate(origin_data):
             for attr in dataset_attr[dataset]:
                 row[f"bleu_{attr}"] = -1
@@ -117,8 +103,10 @@ def main():
                         row[f"{attr}_translation"] = model
             save_json([row], f"llm_datasets_bleu/{dataset}.jsonl")
         df = pd.DataFrame(origin_data)
-        df.to_excel(f"llm_ko_datasets_excel/{dataset}.xlsx", index=False)
-        
+        df.to_excel(
+            f"llm_ko_datasets_excel/{dataset}_{bleu_line_count//100}.xlsx", index=False
+        )
+
     # for model in model_score:
     #     print(model)
     #     for dataset in model_score[model]:
