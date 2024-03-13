@@ -3,6 +3,7 @@ import json
 import os
 from tqdm import tqdm
 from utils.bleu_score import simple_score
+import re
 
 
 # 결과 파일 경로이름을 생성
@@ -22,7 +23,7 @@ def load_json(filename, n):
             for i, line in enumerate(f):
                 if i < n:
                     continue
-                elif i >= n + 100:
+                elif i >= n + 200:
                     break
                 json_data.append(json.loads(line))
     return json_data
@@ -127,36 +128,18 @@ def translate_ko_hellaswag(translate_en2ko, api, row):
     return True
 
 
-def translate_mathqa(translate_en2ko, translate_ko2en, row):
-    keys = ["original_question", "response", "query"]
+def local_translate(translate_en2ko, translate_ko2en, row, attrs):
+    korean_pattern = re.compile("[가-힣]")
     try:
-        for key in keys:
-            row[f"ko_{key}"] = translate_en2ko(row[key])
-            row[f"en_{key}"] = translate_ko2en(row[f"ko_{key}"])
-    except Exception as e:
-        print(e)
-        return False
-    return True
-
-
-def translate_python_code(translate_en2ko, translate_ko2en, row):
-    keys = ["output"]
-    try:
-        for key in keys:
-            row[f"ko_{key}"] = translate_en2ko(row[key])
-            row[f"en_{key}"] = translate_ko2en(row[f"ko_{key}"])
-    except Exception as e:
-        print(e)
-        return False
-    return True
-
-
-def translate_openorca(translate_en2ko, translate_ko2en, row):
-    keys = ["system_prompt", "question", "response"]
-    try:
-        for key in keys:
-            row[f"ko_{key}"] = translate_en2ko(row[key])
-            row[f"en_{key}"] = translate_ko2en(row[f"ko_{key}"])
+        for attr in attrs:
+            text = row[attr]
+            del row[attr]
+            row[attr] = text
+            row[f"ko_{attr}"] = translate_en2ko(row[attr])
+            if not korean_pattern.search(row[f"ko_{attr}"]):
+                continue
+            row[f"en_{attr}"] = translate_ko2en(row[f"ko_{attr}"])
+            row[f"bleu_{attr}"] = simple_score(row[attr], row[f"en_{attr}"])
     except Exception as e:
         print(e)
         return False
@@ -195,22 +178,19 @@ def main():
         # 이미 번역된 데이터는 다시 번역하지 않게 구현
         try:
             result_data = load_json(gen_output_filename(args.input_file, args.model))
-
         except FileNotFoundError:
             result_data = []
             pass
+
         cloud_translation = {
             "ko_arc_challenge": translate_ko_arc_challenge,
             "ko_truthfulqa_mc1": translate_ko_truthfulaq_mc1,
             "hellaswag": translate_ko_hellaswag,
-            "mathqa": translate_mathqa,
-            "python_code": translate_python_code,
-            "openorca": translate_openorca,
         }
-    local_translate = {
-        "MetaMathQA-395K": translate_mathqa,
-        "python-codes-25k": translate_python_code,
-        "OpenOrca": translate_openorca,
+    dataset_attr = {
+        "MetaMathQA-395K": ["original_question", "response", "query"],
+        "OpenOrca": ["system_prompt", "question", "response"],
+        # "python-codes-25k": ["output"],
     }
     # 번역 API 사용
     if args.model == "cloud_api":
@@ -237,8 +217,11 @@ def main():
         output_filename = gen_output_filename(input_filename, args.model)
         line_count = get_line_count(output_filename)
         json_data = load_json(input_filename, line_count)
+
         for data in tqdm(json_data):
-            local_translate[args.dataset](translate_en2ko, translate_ko2en, data)
+            local_translate(
+                translate_en2ko, translate_ko2en, data, dataset_attr[args.dataset]
+            )
             save_json([data], output_filename)
 
             # for conversation in data['conversations']:
