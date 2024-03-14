@@ -1,9 +1,14 @@
 from transformers import T5ForConditionalGeneration, T5Tokenizer
 from utils.bleu_score import simple_score
 import torch
+import nltk
 
-model_name = 'jbochi/madlad400-10b-mt'
-model = T5ForConditionalGeneration.from_pretrained(model_name, torch_dtype=torch.bfloat16, device_map="auto")
+nltk.download("punkt")
+
+model_name = "jbochi/madlad400-10b-mt"
+model = T5ForConditionalGeneration.from_pretrained(
+    model_name, torch_dtype=torch.bfloat16, device_map="auto"
+)
 tokenizer = T5Tokenizer.from_pretrained(model_name)
 
 
@@ -27,12 +32,12 @@ def translate_en2ko(text):
 
 def main():
     while True:
-        text = input('>')
+        text = input(">")
         en_text = translate_ko2en(text)
         ko_text = translate_en2ko(en_text)
-        print('en_text', en_text)
-        print('ko_text', ko_text)
-        print('score', simple_score(text, ko_text))
+        print("en_text", en_text)
+        print("ko_text", ko_text)
+        print("score", simple_score(text, ko_text))
 
 
 if __name__ == "__main__":
