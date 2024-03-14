@@ -4,6 +4,13 @@ import os
 from tqdm import tqdm
 from utils.bleu_score import simple_score
 
+
+# 결과 파일 경로이름을 생성
+def gen_output_filename(filename, model):
+    name, extension = os.path.splitext(os.path.basename(filename))
+    return f'llm_ko_datasets/{name}_{model}{extension}'
+
+
 def load_json(filename):
     json_data = []
     with open(filename, 'r', encoding="utf-8") as f:
@@ -15,15 +22,28 @@ def load_json(filename):
     return json_data
 
 
+# 파일이 존재하면 마지막 줄 뒤에 추가합니다.
 def save_json(json_data, filename):
     filename = filename.replace(' ', '_')
-    with open(filename, "w", encoding="utf-8") as f:
+    with open(filename, "a", encoding="utf-8") as f:
         if not filename.endswith('.jsonl'):
             json.dump(json_data, f, ensure_ascii=False, indent=4)
         else:
             for data in json_data:
                 json.dump(data, f, ensure_ascii=False)
                 f.write("\n")
+
+
+# 대화 번역 트랜잭션
+def cloud_translation(translate_en2ko, api, conversations):
+    for conversation in conversations:
+        text = conversation['value']
+        if ko_text := translate_en2ko(api, text):
+            conversation['ko'] = ko_text
+        else:
+            return False
+    return True
+
 
 def main():
     parser = argparse.ArgumentParser("argument")
@@ -66,7 +86,6 @@ def main():
         result.append(data)
 
     save_json(result, f'result_{args.model}.jsonl')
-
 
 if __name__ == "__main__":
     main()
