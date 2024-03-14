@@ -4,6 +4,7 @@ import json
 import os
 import pandas as pd
 from utils.bleu_score import simple_score
+import re
 
 
 def gen_filename(filename, model):
@@ -26,8 +27,12 @@ def load_json(filename, n):
 
 
 def get_line_count(filename):
-    with open(filename, "r", encoding="utf-8") as f:
-        return sum(1 for _ in f)
+    try:
+        with open(filename, "r", encoding="utf-8") as f:
+            return sum(1 for _ in f)
+    except FileNotFoundError as e:
+        print(e)
+        return 0
 
 
 # 파일이 존재하면 마지막 줄 뒤에 추가합니다.
@@ -46,7 +51,7 @@ def main():
     dataset_attr = {
         "MetaMathQA-395K": ["original_question", "response", "query"],
         "OpenOrca": ["system_prompt", "question", "response"],
-        "python-codes-25k": ["output"],
+        # "python-codes-25k": ["output"],
     }
     model_list = [
         "gugugo",
@@ -63,13 +68,13 @@ def main():
         origin_data = load_json(origin_filename, bleu_line_count)
         json_data_list = {}
 
-        # for model in model_list:
-        #     filename = gen_filename(dataset, model)
-        #     try:
-        #         json_data_list[model] = load_json(filename, bleu_line_count)
-        #     except FileNotFoundError as e:
-        #         print(e)
-        #         continue
+        for model in model_list:
+            filename = gen_filename(dataset, model)
+            try:
+                json_data_list[model] = load_json(filename, bleu_line_count)
+            except FileNotFoundError as e:
+                print(e)
+                continue
         #     with open(filename, "w", encoding="utf-8") as f:
         #         pass
         #     for row in json_data_list[model]:
@@ -93,15 +98,24 @@ def main():
         #                 del row[f"bleu_{attr}"]
         #             row[f"bleu_{attr}"] = simple_score(ref_text, cand_text)
         #         save_json([row], filename, "a")
-
+        korean_pattern = re.compile("[가-힣]")
         for i, row in enumerate(origin_data):
             for attr in dataset_attr[dataset]:
+                text = row[attr]
+                del row[attr]
+                row[attr] = text
+                row[f"ko_{attr}"] = ""
+                row[f"en_{attr}"] = ""
                 row[f"bleu_{attr}"] = -1
-                for model in model_score:
+                row[f"{attr}_translation"] = ""
+                for model in model_list:
                     if (
                         f"bleu_{attr}" in json_data_list[model][i]
                         and row[f"bleu_{attr}"]
                         < json_data_list[model][i][f"bleu_{attr}"]
+                        and korean_pattern.search(
+                            json_data_list[model][i][f"ko_{attr}"]
+                        )
                     ):
                         row[f"ko_{attr}"] = json_data_list[model][i][f"ko_{attr}"]
                         row[f"en_{attr}"] = json_data_list[model][i][f"en_{attr}"]
@@ -109,9 +123,7 @@ def main():
                         row[f"{attr}_translation"] = model
             save_json([row], f"llm_datasets_bleu/{dataset}.jsonl")
         df = pd.DataFrame(origin_data)
-        df.to_excel(
-            f"llm_ko_datasets_excel/{dataset}_{bleu_line_count//100}.xlsx", index=False
-        )
+        df.to_excel(f"llm_ko_datasets_excel/{dataset}.xlsx", index=False)
 
     # for model in model_score:
     #     print(model)

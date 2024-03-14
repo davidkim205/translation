@@ -8,10 +8,8 @@ import re
 
 # 결과 파일 경로이름을 생성
 def gen_output_filename(filename, model):
-    if model:
-        model = f"_{model}"
     name, extension = os.path.splitext(os.path.basename(filename))
-    return f"llm_ko_datasets/ko_{name}{model}{extension}"
+    return f"llm_ko_datasets/ko_{name}_{model}{extension}"
 
 
 def load_json(filename, n):
@@ -21,10 +19,10 @@ def load_json(filename, n):
             json_data = json.load(f)
         else:
             for i, line in enumerate(f):
-                if i < n:
-                    continue
-                elif i >= n + 200:
-                    break
+                # if i < n:
+                #     continue
+                # elif i >= n + 200:
+                #     break
                 json_data.append(json.loads(line))
     return json_data
 
@@ -130,19 +128,41 @@ def translate_ko_hellaswag(translate_en2ko, api, row):
 
 def local_translate(translate_en2ko, translate_ko2en, row, attrs):
     korean_pattern = re.compile("[가-힣]")
-    try:
-        for attr in attrs:
-            text = row[attr]
-            del row[attr]
-            row[attr] = text
-            row[f"ko_{attr}"] = translate_en2ko(row[attr])
-            if not korean_pattern.search(row[f"ko_{attr}"]):
-                continue
-            row[f"en_{attr}"] = translate_ko2en(row[f"ko_{attr}"])
-            row[f"bleu_{attr}"] = simple_score(row[attr], row[f"en_{attr}"])
-    except Exception as e:
-        print(e)
-        return False
+    for attr in attrs:
+        text = row[attr]
+        del row[attr]
+        row[attr] = text
+        try:
+            if not f"ko_{attr}" in row:
+                if row[attr]:
+                    row[f"ko_{attr}"] = translate_en2ko(row[attr])
+                else:
+                    row[f"ko_{attr}"] = ""
+            else:
+                text = row[f"ko_{attr}"]
+                del row[f"ko_{attr}"]
+                row[f"ko_{attr}"] = text
+            # if not korean_pattern.search(row[f"ko_{attr}"]):
+            #     if f"en_{attr}" in row:
+            #         del row[f"en_{attr}"]
+            if not f"en_{attr}" in row:
+                if korean_pattern.search(row[f"ko_{attr}"]):
+                    row[f"en_{attr}"] = translate_ko2en(row[f"ko_{attr}"])
+                else:
+                    row[f"en_{attr}"] = ""
+            else:
+                text = row[f"en_{attr}"]
+                del row[f"en_{attr}"]
+                row[f"en_{attr}"] = text
+            if not f"bleu_{attr}" in row:
+                row[f"bleu_{attr}"] = simple_score(row[attr], row[f"en_{attr}"])
+            else:
+                text = row[f"bleu_{attr}"]
+                del row[f"bleu_{attr}"]
+                row[f"bleu_{attr}"] = text
+            # row[f"bleu_{attr}"] = simple_score(row[attr], row[f"en_{attr}"])
+        except Exception as e:
+            print(e)
     return True
 
 
@@ -216,7 +236,7 @@ def main():
         input_filename = f"/work/translation/llm_datasets/{args.dataset}.jsonl"
         output_filename = gen_output_filename(input_filename, args.model)
         line_count = get_line_count(output_filename)
-        json_data = load_json(input_filename, line_count)
+        json_data = load_json(output_filename, 200)
 
         for data in tqdm(json_data):
             local_translate(
