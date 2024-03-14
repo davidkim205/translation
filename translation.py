@@ -27,8 +27,8 @@ def save_json(json_data, filename):
 
 def main():
     parser = argparse.ArgumentParser("argument")
-    parser.add_argument("--input_file", default="./llm_datasets/conversation_arc.jsonl", type=str, help="input_file")
-    parser.add_argument("--model", default="TowerInstruct", type=str, help="model")
+    parser.add_argument("--input_file", default="./data/orca_sample.jsonl", type=str, help="input_file")
+    parser.add_argument("--model", default="iris_qwen_14b", type=str, help="model")
     args = parser.parse_args()
 
     json_data = load_json(args.input_file)
@@ -45,21 +45,27 @@ def main():
         from models.nllb200 import translate_ko2en, translate_en2ko
     elif args.model=="TowerInstruct":
         from models.TowerInstruct import translate_ko2en, translate_en2ko
+    elif args.model=="iris_qwen_14b":
+        from models.iris_qwen_14b import translate_ko2en, translate_en2ko
+    elif args.model=="iris_qwen_7":
+        from models.iris_qwen_7b import translate_ko2en, translate_en2ko
+    elif args.model=="iris_qwen_4b":
+        from models.iris_qwen_4b import translate_ko2en, translate_en2ko
 
     result=[]
     for data in tqdm(json_data):
-        for conversation in data['conversations']:
-            text = conversation['value']
-            #print(text)
-            ko_text = translate_en2ko(text)
-            en_text = translate_ko2en(ko_text)
-            #print('ko_text', ko_text)
-            conversation['ko'] = ko_text
-            conversation['en'] = en_text
+
+        text = data['en']
+        #print(text)
+        ko_text = translate_en2ko(text)
+        en_text = translate_ko2en(ko_text)
+        #print('ko_text', ko_text)
+        data[args.model+'-ko'] = ko_text
+        data[args.model+'-en'] = en_text
         data['translation'] = args.model
         result.append(data)
 
-    save_json(result, f'llm_ko_datasets/conversation_arc_{args.model}.jsonl')
+    save_json(result, f'result_{args.model}.jsonl')
 
 
 if __name__ == "__main__":
