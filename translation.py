@@ -168,6 +168,14 @@ def main():
         from models.nllb200 import translate_ko2en, translate_en2ko
     elif args.model == "TowerInstruct":
         from models.TowerInstruct import translate_ko2en, translate_en2ko
+    elif args.model == "iris_qwen_14b":
+        from models.iris_qwen_14b import translate_ko2en, translate_en2ko
+    elif args.model == "iris_qwen_7":
+        from models.iris_qwen_7b import translate_ko2en, translate_en2ko
+    elif args.model == "iris_qwen_4b":
+        from models.iris_qwen_4b import translate_ko2en, translate_en2ko
+    elif args.model == "iris_solar":
+        from models.iris_solar import translate_ko2en, translate_en2ko
 
     dataset_attr = {
         "MetaMathQA-395K": ["original_question", "response", "query"],
@@ -185,6 +193,20 @@ def main():
             translate_en2ko, translate_ko2en, data, dataset_attr[args.dataset]
         )
         save_json([data], output_filename)
+    result = []
+    for data in tqdm(json_data):
+
+        text = data["en"]
+        # print(text)
+        ko_text = translate_en2ko(text)
+        en_text = translate_ko2en(ko_text)
+        # print('ko_text', ko_text)
+        data[args.model + "-ko"] = ko_text
+        data[args.model + "-en"] = en_text
+        data["translation"] = args.model
+        result.append(data)
+
+    save_json(result, f"result_{args.model}.jsonl")
 
 
 if __name__ == "__main__":
