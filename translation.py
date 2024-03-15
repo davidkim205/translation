@@ -71,6 +71,8 @@ def main():
         from models.iris_qwen_7b import translate_ko2en, translate_en2ko
     elif args.model=="iris_qwen_4b":
         from models.iris_qwen_4b import translate_ko2en, translate_en2ko
+    elif args.model=="iris_solar":
+        from models.iris_solar import translate_ko2en, translate_en2ko
 
     result=[]
     for data in tqdm(json_data):
