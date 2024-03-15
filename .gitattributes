@@ -22,4 +22,8 @@ llm_datasets/conversation_mmlu.jsonl filter=lfs diff=lfs merge=lfs -text
 llm_datasets/conversation_truthfulqa-mc1.jsonl filter=lfs diff=lfs merge=lfs -text
 llm_datasets/conversation_arc.jsonl filter=lfs diff=lfs merge=lfs -text
 llm_datasets/conversation_hellaswag.jsonl filter=lfs diff=lfs merge=lfs -text
+data/OpenOrca_6048_google.jsonl filter=lfs diff=lfs merge=lfs -text
+data/orca_samples.jsonl filter=lfs diff=lfs merge=lfs -text
+llm_datasets/OpenOrca_6048_2.jsonl filter=lfs diff=lfs merge=lfs -text
+llm_datasets/OpenOrca_6048.jsonl filter=lfs diff=lfs merge=lfs -text
 llm_datasets/MetaMathQA-395K.jsonl filter=lfs diff=lfs merge=lfs -text

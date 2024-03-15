@@ -150,13 +150,10 @@ def local_translate(translate_en2ko, translate_ko2en, row, attrs):
 
 def main():
     parser = argparse.ArgumentParser("argument")
-    # parser.add_argument(
-    #     "--input_file",
-    #     default="./llm_datasets/conversation_arc.jsonl",
-    #     type=str,
-    #     help="input_file",
-    # )
-    parser.add_argument("--model", type=str, help="model")
+    parser.add_argument(
+        "--input_file", default="./data/orca_sample.jsonl", type=str, help="input_file"
+    )
+    parser.add_argument("--model", default="iris_qwen_14b", type=str, help="model")
     parser.add_argument("--dataset", type=str, help="dataset")
     parser.add_argument("--lines", type=int, help="lines")
     args = parser.parse_args()
@@ -171,47 +168,13 @@ def main():
         from models.nllb200 import translate_ko2en, translate_en2ko
     elif args.model == "TowerInstruct":
         from models.TowerInstruct import translate_ko2en, translate_en2ko
-    # elif args.model == "cloud_api":
-    #     from cloud_api import translate_en2ko
 
-    #     api_list = ["azure", "google"]
-    #     try:
-    #         result_data = load_json(gen_output_filename(args.input_file, args.model))
-    #     except FileNotFoundError:
-    #         result_data = []
-    #         pass
-
-    #     cloud_translation = {
-    #         "ko_arc_challenge": translate_ko_arc_challenge,
-    #         "ko_truthfulqa_mc1": translate_ko_truthfulaq_mc1,
-    #         "hellaswag": translate_ko_hellaswag,
-    #     }
     dataset_attr = {
         "MetaMathQA-395K": ["original_question", "response", "query"],
         "OpenOrca": ["system_prompt", "question", "response"],
         # "python-codes-25k": ["output"],
     }
-    # 번역 API 사용
-    # if args.model == "cloud_api":
-    #     # json_data = json_data[:21]
-    #     json_data = json_data[len(result_data) :]
-    #     api_idx = 0
-    #     api = api_list[api_idx]
-    #     output_filename = gen_output_filename(args.input_file, "")
-    #     cloud_output_filename = gen_output_filename(args.input_file, args.model)
-    #     for data in tqdm(json_data):
-    #         try:
-    #             while not cloud_translation[args.dataset](translate_en2ko, api, data):
-    #                 api_idx += 1
-    #                 api = api_list[api_idx]
-    #             else:
-    #                 save_json([data], output_filename, "a")
-    #                 data["translation"] = f"{api}_api"
-    #                 save_json([data], cloud_output_filename, "a")
-    #         except IndexError:
-    #             break
-    # # 로컬 모델 사용
-    # else:
+
     input_filename = f"/work/translation/llm_datasets/{args.dataset}.jsonl"
     output_filename = gen_output_filename(input_filename, args.model)
     line_count = get_line_count(output_filename)

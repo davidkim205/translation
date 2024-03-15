@@ -11,7 +11,7 @@ def gen_filename(filename, model):
     return f"llm_ko_datasets/ko_{filename}_{model}.jsonl"
 
 
-def load_json(filename, n):
+def load_json(filename, n, a):
     json_data = []
     with open(filename, "r", encoding="utf-8") as f:
         if os.path.splitext(filename)[1] != ".jsonl":
@@ -20,7 +20,7 @@ def load_json(filename, n):
             for i, line in enumerate(f):
                 if i < n:
                     continue
-                elif i >= n + 100:
+                elif i >= n + a:
                     break
                 json_data.append(json.loads(line))
     return json_data
@@ -49,8 +49,8 @@ def save_json(json_data, filename, option="a"):
 
 def main():
     dataset_attr = {
-        "MetaMathQA-395K": ["original_question", "response", "query"],
-        "OpenOrca": ["system_prompt", "question", "response"],
+        # "MetaMathQA-395K": ["original_question", "response", "query"],
+        "OpenOrca": ["question", "response"],
         # "python-codes-25k": ["output"],
     }
     model_list = [
@@ -60,44 +60,32 @@ def main():
         "nllb200",
         "TowerInstruct",
     ]
-
+    json_line = 100
     for dataset in dataset_attr:
-        origin_filename = f"llm_datasets/{dataset}.jsonl"
-        bleu_filename = f"llm_datasets_bleu/{dataset}.jsonl"
-        bleu_line_count = get_line_count(bleu_filename)
-        origin_data = load_json(origin_filename, bleu_line_count)
+        origin_filename = "/work/translation/data/OpenOrca_6048_google.jsonl"
+        # bleu_filename = f"llm_datasets_bleu/{dataset}.jsonl"
+        # bleu_line_count = get_line_count(bleu_filename)
+        bleu_line_count = 0
+        origin_data = load_json(origin_filename, bleu_line_count, json_line)
         json_data_list = {}
-
+        output_filename = f"data/orca_samples.jsonl"
+        result = {}
+        for row in origin_data:
+            string_temp = []
+            for attr in dataset_attr[dataset]:
+                result["en"] = row[attr]
+                save_json([result], output_filename)
+                string_temp.append(row[attr])
+            result["en"] = "\n".join(string_temp)
+            save_json([result], output_filename)
+        return
         for model in model_list:
             filename = gen_filename(dataset, model)
             try:
-                json_data_list[model] = load_json(filename, bleu_line_count)
+                json_data_list[model] = load_json(filename, bleu_line_count, json_line)
             except FileNotFoundError as e:
                 print(e)
                 continue
-        #     with open(filename, "w", encoding="utf-8") as f:
-        #         pass
-        #     for row in json_data_list[model]:
-        #         for attr in dataset_attr[dataset]:
-        #             text = row[attr]
-        #             del row[attr]
-        #             row[attr] = text
-        #             if f"ko_{attr}" not in row:
-        #                 continue
-        #             text = row[f"ko_{attr}"]
-        #             del row[f"ko_{attr}"]
-        #             row[f"ko_{attr}"] = text
-        #             if f"en_{attr}" not in row:
-        #                 continue
-        #             text = row[f"en_{attr}"]
-        #             del row[f"en_{attr}"]
-        #             row[f"en_{attr}"] = text
-        #             ref_text = row[attr]
-        #             cand_text = row[f"en_{attr}"]
-        #             if f"bleu_{attr}" in row:
-        #                 del row[f"bleu_{attr}"]
-        #             row[f"bleu_{attr}"] = simple_score(ref_text, cand_text)
-        #         save_json([row], filename, "a")
         korean_pattern = re.compile("[가-힣]")
         for i, row in enumerate(origin_data):
             for attr in dataset_attr[dataset]:
@@ -111,8 +99,10 @@ def main():
                 for model in model_list:
                     if (
                         f"bleu_{attr}" in json_data_list[model][i]
-                        and row[f"bleu_{attr}"]
-                        < json_data_list[model][i][f"bleu_{attr}"]
+                        and (
+                            row[f"bleu_{attr}"]
+                            < json_data_list[model][i][f"bleu_{attr}"]
+                        )
                         and korean_pattern.search(
                             json_data_list[model][i][f"ko_{attr}"]
                         )
