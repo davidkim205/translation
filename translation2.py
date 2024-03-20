@@ -3,7 +3,7 @@ import json
 import os
 from tqdm import tqdm
 from utils.bleu_score import simple_score
-
+from utils.tokenizer import text_tokenize
 
 # 결과 파일 경로이름을 생성
 def gen_output_filename(filename, model):
@@ -47,7 +47,7 @@ def cloud_translation(translate_en2ko, api, conversations):
 
 def main():
     parser = argparse.ArgumentParser("argument")
-    parser.add_argument("--input_file", default="./data/orca_samples.jsonl", type=str, help="input_file")
+    parser.add_argument("--input_file", default="/work/translation/data/komt-1810k-test.jsonl", type=str, help="input_file")
     parser.add_argument("--model", default="iris_mistral", type=str, help="model")
     args = parser.parse_args()
 
@@ -75,20 +75,29 @@ def main():
         from models.iris_solar import translate_ko2en, translate_en2ko
     elif args.model=="iris_mistral":
         from models.iris_mistral import translate_ko2en, translate_en2ko
-    result=[]
-    for data in tqdm(json_data):
+    results=[]
+    for index, data in tqdm(enumerate(json_data)):
+        #{"conversations": [{"from": "human", "value": "다음 문장을 한글로 번역하세요.\nDior is giving me all of my fairytale fantasies."}, {"from": "gpt", "value": "디올이 나에게 모든 동화적 환상을 심어주고 있어."}], "src": "aihub-MTPE"}
+        chat = data["conversations"]
+        src = chat[0]['value']
+        dst = chat[1]['value']
+        if chat[0]['value'].find("다음 문장을 한글로 번역하세요.") != -1:
+            lang = 'en'
+        else:
+            lang = 'ko'
+        src = src.split('다음 문장을 한글로 번역하세요.\n')[-1]
+        src = src.split('다음 문장을 영어로 번역하세요.\n')[-1]
+        if lang == 'en':
+            trans = translate_en2ko(src)
+        else:
+            trans = translate_ko2en(src)
+        bleu = simple_score(dst, trans)
+        bleu = round(bleu, 2)
+        result={'index':index, 'lang':lang, 'src':src,'trans':trans, 'label':dst, 'bleu':bleu,'model':args.model}
+        print(json.dumps(result, ensure_ascii=False, indent=2))
+        results.append(result)
 
-        text = data['en']
-        #print(text)
-        ko_text = translate_en2ko(text)
-        en_text = translate_ko2en(ko_text)
-        #print('ko_text', ko_text)
-        data[args.model+'-ko'] = ko_text
-        data[args.model+'-en'] = en_text
-        data['translation'] = args.model
-        result.append(data)
-
-    save_json(result, f'result_{args.model}.jsonl')
+    save_json(results, f'result_{args.model}.jsonl')
 
 if __name__ == "__main__":
     main()

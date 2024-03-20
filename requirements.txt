@@ -19,3 +19,4 @@ matplotlib
 deepl
 google-cloud-translate==2.0.1
 azure-ai-translation-text==1.0.0b1
+kiwipiepy

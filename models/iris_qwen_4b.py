@@ -11,7 +11,7 @@ from transformers import StoppingCriteria, StoppingCriteriaList
 from transformers import TextStreamer, GenerationConfig
 
 
-args_model_name="davidkim205/iris-qwen-4b"
+args_model_name="davidkim205/iris-solar-10.7b-v0.1"
 args_max_new_tokens=1024
 
 class LocalStoppingCriteria(StoppingCriteria):
