@@ -84,15 +84,15 @@ def main():
         chat = data["conversations"]
         src = chat[0]["value"]
         dst = chat[1]["value"]
-        if chat[0]["value"].find("다음 문장을 한글로 번역하세요.") != -1:
+        if chat[0]["value"].find("한글로 번역하세요.") != -1:
             lang = "en"
         else:
             lang = "ko"
         if lang == "en":
-            src = src.split("다음 문장을 한글로 번역하세요.\n")[-1]
+            src = src.split("한글로 번역하세요.\n", 1)[-1]
             trans = translate_en2ko(src)
         elif lang == "ko":
-            src = src.split("다음 문장을 영어로 번역하세요.\n")[-1]
+            src = src.split("영어로 번역하세요.\n", 1)[-1]
             trans = translate_ko2en(src)
         bleu = simple_score(dst, trans)
         bleu = round(bleu, 2)
