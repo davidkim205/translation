@@ -78,6 +78,8 @@ def main():
         from models.iris_solar import translate_ko2en, translate_en2ko
     elif args.model == "iris_mistral":
         from models.iris_mistral import translate_ko2en, translate_en2ko
+    elif args.model == "synatra":
+        from models.synatra import translate_ko2en, translate_en2ko
     results = []
     for index, data in tqdm(enumerate(json_data)):
         # {"conversations": [{"from": "human", "value": "다음 문장을 한글로 번역하세요.\nDior is giving me all of my fairytale fantasies."}, {"from": "gpt", "value": "디올이 나에게 모든 동화적 환상을 심어주고 있어."}], "src": "aihub-MTPE"}
@@ -94,7 +96,7 @@ def main():
         elif lang == "ko":
             src = src.split("영어로 번역하세요.\n", 1)[-1]
             trans = translate_ko2en(src)
-        bleu = simple_score(dst, trans)
+        bleu = simple_score(dst, trans, lang)
         bleu = round(bleu, 2)
         result = {
             "index": index,
