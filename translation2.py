@@ -92,10 +92,16 @@ def main():
             lang = "ko"
         if lang == "en":
             src = src.split("한글로 번역하세요.\n", 1)[-1]
-            trans = translate_en2ko(src)
+            try:
+                trans = translate_en2ko(src)
+            except Exception as e:
+                trans = ""
         elif lang == "ko":
             src = src.split("영어로 번역하세요.\n", 1)[-1]
-            trans = translate_ko2en(src)
+            try:
+                trans = translate_ko2en(src)
+            except Exception as e:
+                trans = ""
         bleu = simple_score(dst, trans, lang)
         bleu = round(bleu, 2)
         result = {
