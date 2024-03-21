@@ -28,7 +28,7 @@ def save_json(json_data, filename):
 def main():
     parser = argparse.ArgumentParser("argument")
     parser.add_argument("input_file",type=str,help="input_file")
-    parser.add_argument("--test_file",type=str,help="test_file")
+    parser.add_argument("--test_file",default='/work/translation/data/komt-1810k-test.jsonl', type=str,help="test_file")
     args = parser.parse_args()
     src_list = {
         "aihub-MTPE": [],
