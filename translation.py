@@ -67,7 +67,7 @@ def main():
         # data[args.model + "-en"] = en_text
         # data["translation"] = args.model
 
-        save_json([result], f"results1/{output_file}")
+        save_json([result], f"results_1/{output_file}")
 
 
 if __name__ == "__main__":

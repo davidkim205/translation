@@ -1,7 +1,7 @@
 import argparse
 import json
 import os
-from man_file import load_json
+from man_file import load_json, get_file_list
 
 
 def main():
@@ -33,15 +33,17 @@ def main():
         "aihub-patent": [],
         "aihub-colloquial": [],
     }
-    origin_json_data = load_json("/work/translation/data/komt-1810k-test.jsonl")
-    json_data = load_json(args.input_file)
-    for i in range(len(origin_json_data)):
-        src_list[origin_json_data[i]["src"]].append(json_data[i]["bleu"])
-    name, _ = os.path.splitext(os.path.basename(args.input_file))
-    print("\n", name)
+    file_list = get_file_list(args.input_file)
+    for input_file in file_list:
+        json_data = load_json(input_file)
+        for data in json_data:
+            src_list[data["src"]].append(data["bleu"])
+        name, _ = os.path.splitext(os.path.basename(input_file))
+        # print("\n", name)
     for key, val in src_list.items():
         score = round(sum(val) / len(val), 2)
         print(f"\t{key}: {score}")
+        src_list[key] = []
 
 
 if __name__ == "__main__":

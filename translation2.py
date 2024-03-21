@@ -75,7 +75,7 @@ def main():
             "model": args.model,
         }
         print(json.dumps(result, ensure_ascii=False, indent=2))
-        save_json([result], f"ko_data/result_{args.model}.jsonl")
+        save_json([result], f"results_2/result_{args.model}.jsonl")
 
 
 if __name__ == "__main__":
