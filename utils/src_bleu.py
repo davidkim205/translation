@@ -1,28 +1,7 @@
 import argparse
 import json
 import os
-
-
-def load_json(filename):
-    json_data = []
-    with open(filename, "r", encoding="utf-8") as f:
-        if os.path.splitext(filename)[1] != ".jsonl":
-            json_data = json.load(f)
-        else:
-            for line in f:
-                json_data.append(json.loads(line))
-    return json_data
-
-
-def save_json(json_data, filename):
-    filename = filename.replace(" ", "_")
-    with open(filename, "a", encoding="utf-8") as f:
-        if not filename.endswith(".jsonl"):
-            json.dump(json_data, f, ensure_ascii=False, indent=4)
-        else:
-            for data in json_data:
-                json.dump(data, f, ensure_ascii=False)
-                f.write("\n")
+from man_file import load_json
 
 
 def main():
