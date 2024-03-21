@@ -54,6 +54,8 @@ def main():
         type=str,
         help="input_file",
     )
+    parser.add_argument("--model_path", default="davidkim205/iris-mistral-7b-v0.1", type=str, help="model path")
+    parser.add_argument("--output", default="", type=str, help="model path")
     parser.add_argument("--model", default="iris_mistral", type=str, help="model")
     args = parser.parse_args()
     json_data = load_json(args.input_file)
@@ -78,6 +80,9 @@ def main():
         from models.iris_solar import translate_ko2en, translate_en2ko
     elif args.model == "iris_mistral":
         from models.iris_mistral import translate_ko2en, translate_en2ko
+        if args.model_path:
+            from models.iris_mistral import load_model
+            load_model(args.model_path)
     elif args.model == "synatra":
         from models.synatra import translate_ko2en, translate_en2ko
     results = []
@@ -114,7 +119,11 @@ def main():
             "model": args.model,
         }
         print(json.dumps(result, ensure_ascii=False, indent=2))
-        save_json([result], f"ko_data/result_{args.model}.jsonl")
+        if args.output:
+            output = args.output
+        else:
+            output = f"ko_data/result_{args.model}.jsonl"
+        save_json([result], output)
 
 
 if __name__ == "__main__":

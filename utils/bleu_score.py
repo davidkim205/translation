@@ -11,8 +11,6 @@ def simple_score(text1, text2, lang="en"):
         reference = word_tokenize(text1.lower())
         candidate = word_tokenize(text2.lower())
         
-    print('reference', reference)
-    print('candidate', candidate)
     # base = sentence_bleu([reference], reference)
     score = sentence_bleu([reference], candidate, smoothing_function=SmoothingFunction().method2)
     return score

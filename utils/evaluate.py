@@ -27,12 +27,8 @@ def save_json(json_data, filename):
 
 def main():
     parser = argparse.ArgumentParser("argument")
-    parser.add_argument(
-        "--input_file",
-        default="/work/translation/results/result_google.jsonl",
-        type=str,
-        help="input_file",
-    )
+    parser.add_argument("input_file",type=str,help="input_file")
+    parser.add_argument("--test_file",type=str,help="test_file")
     args = parser.parse_args()
     src_list = {
         "aihub-MTPE": [],
@@ -54,16 +50,19 @@ def main():
         "aihub-patent": [],
         "aihub-colloquial": [],
     }
-    origin_json_data = load_json("/work/translation/data/komt-1810k-test.jsonl")
+    origin_json_data = load_json(args.test_file)
+    
     json_data = load_json(args.input_file)
     for i in range(len(origin_json_data)):
         src_list[origin_json_data[i]["src"]].append(json_data[i]["bleu"])
     name, _ = os.path.splitext(os.path.basename(args.input_file))
     print("\n", name)
+    total=[]
     for key, val in src_list.items():
         score = round(sum(val) / len(val), 2)
+        total.append(score)
         print(f"\t{key}: {score}")
-
-
+    average_value = sum(total) / len(total)
+    print('average', average_value)
 if __name__ == "__main__":
     main()
