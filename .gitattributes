@@ -1,0 +1,9 @@
+results/result_google.jsonl filter=lfs diff=lfs merge=lfs -text
+results/result_gugugo.jsonl filter=lfs diff=lfs merge=lfs -text
+results/result_iris_mistral.jsonl filter=lfs diff=lfs merge=lfs -text
+results/result_madlad400.jsonl filter=lfs diff=lfs merge=lfs -text
+results/result_mbart50.jsonl filter=lfs diff=lfs merge=lfs -text
+results/result_nllb200.jsonl filter=lfs diff=lfs merge=lfs -text
+results/result_iris_qwen_4b.jsonl filter=lfs diff=lfs merge=lfs -text
+results/result_iris_qwen_7b.jsonl filter=lfs diff=lfs merge=lfs -text
+results/result_TowerInstruct.jsonl filter=lfs diff=lfs merge=lfs -text
