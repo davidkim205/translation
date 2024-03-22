@@ -3,16 +3,28 @@ import json
 import os
 from tqdm import tqdm
 from utils.bleu_score import simple_score
+from utils.tokenizer import text_tokenize
 from utils.man_file import load_json, save_json
 
 
 def main():
     parser = argparse.ArgumentParser("argument")
     parser.add_argument(
-        "--input_file", default="./data/orca_samples.jsonl", type=str, help="input_file"
+        "--input_file",
+        default="/work/translation/data/komt-1810k-test.jsonl",
+        type=str,
+        help="input_file",
     )
+    parser.add_argument(
+        "--model_path",
+        default="davidkim205/iris-mistral-7b-v0.1",
+        type=str,
+        help="model path",
+    )
+    parser.add_argument("--output", default="", type=str, help="model path")
     parser.add_argument("--model", default="iris_mistral", type=str, help="model")
     args = parser.parse_args()
+    json_data = load_json(args.input_file)
 
     if args.model == "gugugo":
         from models.gugugo import translate_en2ko, translate_ko2en
@@ -35,39 +47,59 @@ def main():
     elif args.model == "iris_mistral":
         from models.iris_mistral import translate_ko2en, translate_en2ko
 
-    output_file = os.path.basename(args.input_file)
-    json_data = load_json(args.input_file)
-    result = []
-    for data in tqdm(json_data):
-        try:
-            if data["lang"] == "en":
-                re_trans = translate_ko2en(data["trans"])
-            else:
-                re_trans = translate_en2ko(data["trans"])
-        except:
-            re_trans = ""
-        result = {
-            "index": data["index"],
-            "lang": data["lang"],
-            "text": data["text"],
-            "trans": data["trans"],
-            "re_trans": re_trans,
-            "label": data["label"],
-            "bleu": simple_score(data["text"], re_trans, lang=data["lang"]),
-            "model": data["model"],
-            "src": data["src"],
-        }
-        # text = data["src"]
-        # data["src"] = origin_json_data[i]["src"]
-        # print(text)
-        # ko_text = translate_en2ko(text)
-        # en_text = translate_ko2en(ko_text)
-        # print('ko_text', ko_text)
-        # data[args.model + "-ko"] = ko_text
-        # data[args.model + "-en"] = en_text
-        # data["translation"] = args.model
+        if args.model_path:
+            from models.iris_mistral import load_model
 
-        save_json([result], f"results_1/{output_file}")
+            load_model(args.model_path)
+    elif args.model == "synatra":
+        from models.synatra import translate_ko2en, translate_en2ko
+    results = []
+    for index, data in tqdm(enumerate(json_data)):
+        # {"conversations": [{"from": "human", "value": "다음 문장을 한글로 번역하세요.\nDior is giving me all of my fairytale fantasies."}, {"from": "gpt", "value": "디올이 나에게 모든 동화적 환상을 심어주고 있어."}], "src": "aihub-MTPE"}
+        chat = data["conversations"]
+        src = data["src"]
+        text = chat[0]["value"]
+        dst = chat[1]["value"]
+        if chat[0]["value"].find("한글로 번역하세요.") != -1:
+            lang = "en"
+        else:
+            lang = "ko"
+        if lang == "en":
+            trans_lang = "ko"
+            text = text.split("한글로 번역하세요.\n", 1)[-1]
+            try:
+                trans = translate_en2ko(text)
+                trans2 = translate_ko2en(trans)
+            except Exception as e:
+                trans = ""
+        elif lang == "ko":
+            trans_lang = "en"
+            text = text.split("영어로 번역하세요.\n", 1)[-1]
+            try:
+                trans = translate_ko2en(text)
+                trans2 = translate_en2ko(text)
+            except Exception as e:
+                trans = ""
+        bleu = simple_score(dst, trans, trans_lang)
+        bleu = round(bleu, 2)
+        result = {
+            "index": index,
+            "lang": lang,
+            "text": text,
+            "trans": trans,
+            "re_trans": trans2,
+            "label": dst,
+            "bleu": bleu,
+            "model": args.model,
+            "src": src,
+        }
+        print(json.dumps(result, ensure_ascii=False, indent=2))
+        if args.output:
+            output = args.output
+        else:
+            output = "results_1/result_{args.model}.jsonl"
+        save_json([result], output)
+
 
 
 if __name__ == "__main__":
