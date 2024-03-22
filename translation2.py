@@ -15,7 +15,12 @@ def main():
         type=str,
         help="input_file",
     )
-    parser.add_argument("--model_path", default="davidkim205/iris-mistral-7b-v0.1", type=str, help="model path")
+    parser.add_argument(
+        "--model_path",
+        default="davidkim205/iris-mistral-7b-v0.1",
+        type=str,
+        help="model path",
+    )
     parser.add_argument("--output", default="", type=str, help="model path")
     parser.add_argument("--model", default="iris_mistral", type=str, help="model")
     args = parser.parse_args()
@@ -41,8 +46,10 @@ def main():
         from models.iris_solar import translate_ko2en, translate_en2ko
     elif args.model == "iris_mistral":
         from models.iris_mistral import translate_ko2en, translate_en2ko
+
         if args.model_path:
             from models.iris_mistral import load_model
+
             load_model(args.model_path)
     elif args.model == "synatra":
         from models.synatra import translate_ko2en, translate_en2ko
@@ -50,34 +57,38 @@ def main():
     for index, data in tqdm(enumerate(json_data)):
         # {"conversations": [{"from": "human", "value": "다음 문장을 한글로 번역하세요.\nDior is giving me all of my fairytale fantasies."}, {"from": "gpt", "value": "디올이 나에게 모든 동화적 환상을 심어주고 있어."}], "src": "aihub-MTPE"}
         chat = data["conversations"]
-        src = chat[0]["value"]
+        src = data["src"]
+        text = chat[0]["value"]
         dst = chat[1]["value"]
         if chat[0]["value"].find("한글로 번역하세요.") != -1:
             lang = "en"
         else:
             lang = "ko"
         if lang == "en":
-            src = src.split("한글로 번역하세요.\n", 1)[-1]
+            trans_lang = "ko"
+            text = text.split("한글로 번역하세요.\n", 1)[-1]
             try:
-                trans = translate_en2ko(src)
+                trans = translate_en2ko(text)
             except Exception as e:
                 trans = ""
         elif lang == "ko":
-            src = src.split("영어로 번역하세요.\n", 1)[-1]
+            trans_lang = "en"
+            text = text.split("영어로 번역하세요.\n", 1)[-1]
             try:
-                trans = translate_ko2en(src)
+                trans = translate_ko2en(text)
             except Exception as e:
                 trans = ""
-        bleu = simple_score(dst, trans, lang)
+        bleu = simple_score(dst, trans, trans_lang)
         bleu = round(bleu, 2)
         result = {
             "index": index,
             "lang": lang,
-            "src": src,
+            "text": text,
             "trans": trans,
             "label": dst,
             "bleu": bleu,
             "model": args.model,
+            "src": src,
         }
         print(json.dumps(result, ensure_ascii=False, indent=2))
         if args.output:

@@ -7,7 +7,12 @@ from bleu_score import simple_score
 
 def main():
     parser = argparse.ArgumentParser("argument")
-    parser.add_argument("input_file", type=str, help="input_file")
+    parser.add_argument(
+        "--input_file",
+        default="/work/translation/results_2",
+        type=str,
+        help="input_file",
+    )
     parser.add_argument(
         "--test_file",
         default="/work/translation/data/komt-1810k-test.jsonl",
