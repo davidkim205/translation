@@ -9,8 +9,7 @@ from man_file import load_json, save_json, get_file_list
 def main():
     parser = argparse.ArgumentParser("argument")
     parser.add_argument(
-        "--input_file",
-        default="/work/translation/results_2",
+        "input_file",
         type=str,
         help="input_file",
     )
@@ -112,7 +111,7 @@ def main():
         name, _ = os.path.splitext(os.path.basename(input_file))
         name = name.split("result_", 1)[-1]
         print("\n", name)
-        print("\tavg_bleu_score: ", round(sum(model_score) / len(model_score), 2))
+
         print()
         for key in src_list:
             score = round(sum(src_list[key]) / len(src_list[key]), 2)
@@ -123,7 +122,7 @@ def main():
     for key in model_src_score:
         score = round(sum(model_src_score[key]) / len(model_src_score[key]), 2)
         print(f"\t{key}: {score}")
-
+    print("avg_bleu_score: ", round(sum(model_score) / len(model_score), 2))
 
 if __name__ == "__main__":
     main()
