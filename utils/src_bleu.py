@@ -86,10 +86,10 @@ def main():
         name = name.split("_")[-1]
         print("\n", name)
         print("\tavg_bleu_score: ", round(sum(model_score) / len(model_score), 2))
-        for key in src_list:
-            score = round(sum(src_list[key]) / len(src_list[key]), 2)
-            print(f"\t{key}: {score}")
-            src_list[key] = []
+        # for key in src_list:
+        #     score = round(sum(src_list[key]) / len(src_list[key]), 2)
+        #     print(f"\t{key}: {score}")
+        #     src_list[key] = []
     print("\n", "src별 평균 score")
     for key in model_src_score:
         score = round(sum(model_src_score[key]) / len(model_src_score[key]), 2)
