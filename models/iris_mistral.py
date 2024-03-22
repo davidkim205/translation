@@ -3,10 +3,11 @@ import torch
 from utils.bleu_score import simple_score
 import torch
 
-repo = "davidkim205/iris-mistral-7b-v0.1"
-model = AutoModelForCausalLM.from_pretrained(repo, torch_dtype=torch.bfloat16, device_map='auto')
-tokenizer = AutoTokenizer.from_pretrained(repo)
-
+# repo = "/work/kollm/LLaMA-Factory/outputs/mistralai-Mistral-7B-Instruct-v0.2-trans-346k-sft-lora-lr1e-5-e1-b4/checkpoint-15000"
+# model = AutoModelForCausalLM.from_pretrained(repo, torch_dtype=torch.bfloat16, device_map='auto')
+# tokenizer = AutoTokenizer.from_pretrained(repo)
+model = None
+tokenizer = None
 
 class StoppingCriteriaSub(StoppingCriteria):
     def __init__(self, stops=[], encounters=1):
@@ -24,6 +25,12 @@ class StoppingCriteriaSub(StoppingCriteria):
 stop_words_ids = torch.tensor(
     [[829, 45107, 29958], [1533, 45107, 29958], [829, 45107, 29958], [21106, 45107, 29958]]).to("cuda")
 stopping_criteria = StoppingCriteriaList([StoppingCriteriaSub(stops=stop_words_ids)])
+
+def load_model(path):
+    global model, tokenizer
+    print('load_model', path)
+    model = AutoModelForCausalLM.from_pretrained(path, torch_dtype=torch.bfloat16, device_map='auto')
+    tokenizer = AutoTokenizer.from_pretrained(path)
 
 
 def generate(prompt):

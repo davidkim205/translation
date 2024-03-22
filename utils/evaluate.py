@@ -7,11 +7,12 @@ from bleu_score import simple_score
 
 def main():
     parser = argparse.ArgumentParser("argument")
+    parser.add_argument("input_file", type=str, help="input_file")
     parser.add_argument(
-        "--input_file",
-        default="/work/translation/results/result_google.jsonl",
+        "--test_file",
+        default="/work/translation/data/komt-1810k-test.jsonl",
         type=str,
-        help="input_file",
+        help="test_file",
     )
     args = parser.parse_args()
     src_list = {
@@ -83,13 +84,15 @@ def main():
             model_src_score[data["src"]].append(data["bleu"])
             model_score.append(data["bleu"])
         name, _ = os.path.splitext(os.path.basename(input_file))
-        name = name.split("_")[-1]
+        name = name.split("result_", 1)[-1]
         print("\n", name)
         print("\tavg_bleu_score: ", round(sum(model_score) / len(model_score), 2))
-        # for key in src_list:
-        #     score = round(sum(src_list[key]) / len(src_list[key]), 2)
-        #     print(f"\t{key}: {score}")
-        #     src_list[key] = []
+        print()
+        for key in src_list:
+            score = round(sum(src_list[key]) / len(src_list[key]), 2)
+            print(f"\t{key}: {score}")
+            src_list[key] = []
+        print()
     print("\n", "src별 평균 score")
     for key in model_src_score:
         score = round(sum(model_src_score[key]) / len(model_src_score[key]), 2)
