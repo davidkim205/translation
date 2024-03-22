@@ -55,12 +55,32 @@ def main():
         "aihub-patent": [],
         "aihub-colloquial": [],
     }
+    origin_file = "data/komt-1810k-test.jsonl"
+    origin_json_data = load_json(origin_file)
+    index_to_src = list(map(lambda x: x["src"], origin_json_data))
     file_list = get_file_list(args.input_file)
     for input_file in file_list:
-        # output_file = f"results_translation/{os.path.basename(input_file)}"
+        output_file = f"results_temp/{os.path.basename(input_file)}"
         model_score = []
         json_data = load_json(input_file)
         for data in json_data:
+
+            # # results 데이터 리폼(src => text, src에 datatype)
+            # if "text" in data:
+            #     break
+            # text = data["src"]
+            # src = index_to_src[int(data["index"])]
+            # result = {
+            #     "index": data["index"],
+            #     "lang": data["lang"],
+            #     "text": text,
+            #     "trans": data["trans"],
+            #     "label": data["label"],
+            #     "bleu": data["bleu"],
+            #     "model": data["model"],
+            #     "src": src,
+            # }
+            # save_json([result], output_file)
 
             # # translation(trans와 label을 비교)
             # if data["lang"] == "en":
