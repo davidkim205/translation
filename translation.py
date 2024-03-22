@@ -77,7 +77,7 @@ def main():
             text = text.split("영어로 번역하세요.\n", 1)[-1]
             try:
                 trans = translate_ko2en(text)
-                trans2 = translate_en2ko(text)
+                trans2 = translate_en2ko(trans)
             except Exception as e:
                 trans = ""
         bleu = simple_score(text, trans2, trans_lang)
