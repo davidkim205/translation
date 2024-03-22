@@ -1,6 +1,6 @@
 from nltk.translate.bleu_score import sentence_bleu,SmoothingFunction
 from nltk.tokenize import word_tokenize
-from tokenizer import tokenize
+from utils.tokenizer import tokenize
 import re
 
 
