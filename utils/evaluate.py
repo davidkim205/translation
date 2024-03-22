@@ -2,7 +2,8 @@ import argparse
 import json
 import os
 from man_file import load_json, save_json, get_file_list
-from bleu_score import simple_score
+
+# from bleu_score import simple_score
 
 
 def main():
