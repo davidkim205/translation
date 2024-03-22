@@ -2,7 +2,8 @@ import argparse
 import json
 import os
 from man_file import load_json, save_json, get_file_list
-from bleu_score import simple_score
+
+# from bleu_score import simple_score
 
 
 def main():
@@ -70,7 +71,7 @@ def main():
         json_data = load_json(input_file)
         for data in json_data:
 
-            # # results 데이터 리폼(src => text, src에 datatype)
+            # results 데이터 리폼(src => text, src에 datatype)
             # if "text" in data:
             #     break
             # text = data["src"]
@@ -87,7 +88,7 @@ def main():
             # }
             # save_json([result], output_file)
 
-            # # translation(trans와 label을 비교)
+            # translation2(trans와 label을 비교)
             # if data["lang"] == "en":
             #     trans_lang = "ko"
             # else:
@@ -97,7 +98,7 @@ def main():
             # )
             # save_json([data], output_file)
 
-            # # translation2(text와 re_trans를 비교)
+            # # translation(text와 re_trans를 비교)
             # data["bleu"] = round(
             #     simple_score(data["text"], data["re_trans"], trans_lang), 2
             # )
