@@ -1,16 +1,18 @@
 from nltk.translate.bleu_score import sentence_bleu,SmoothingFunction
 from nltk.tokenize import word_tokenize
-from utils.tokenizer import tokenize
+from tokenizer import tokenize
+import re
 
 
 def simple_score(text1, text2, lang="en"):
+    text1 = re.sub("\n", " ", text1)
+    text2 = re.sub("\n", " ", text2)
     if lang == "ko":
         reference = tokenize(text1)
         candidate = tokenize(text2)
     elif lang == "en":
         reference = word_tokenize(text1.lower())
         candidate = word_tokenize(text2.lower())
-        
     # base = sentence_bleu([reference], reference)
     score = sentence_bleu([reference], candidate, smoothing_function=SmoothingFunction().method2)
     return score

@@ -4,46 +4,7 @@ import os
 from tqdm import tqdm
 from utils.bleu_score import simple_score
 from utils.tokenizer import text_tokenize
-
-
-# 결과 파일 경로이름을 생성
-def gen_output_filename(filename, model):
-    name, extension = os.path.splitext(os.path.basename(filename))
-    return f"ko_data/{name}_{model}{extension}"
-
-
-def load_json(filename):
-    json_data = []
-    with open(filename, "r", encoding="utf-8") as f:
-        if os.path.splitext(filename)[1] != ".jsonl":
-            json_data = json.load(f)
-        else:
-            for line in f:
-                json_data.append(json.loads(line))
-    return json_data
-
-
-# 파일이 존재하면 마지막 줄 뒤에 추가합니다.
-def save_json(json_data, filename):
-    filename = filename.replace(" ", "_")
-    with open(filename, "a", encoding="utf-8") as f:
-        if not filename.endswith(".jsonl"):
-            json.dump(json_data, f, ensure_ascii=False, indent=4)
-        else:
-            for data in json_data:
-                json.dump(data, f, ensure_ascii=False)
-                f.write("\n")
-
-
-# 대화 번역 트랜잭션
-def cloud_translation(translate_en2ko, api, conversations):
-    for conversation in conversations:
-        text = conversation["value"]
-        if ko_text := translate_en2ko(api, text):
-            conversation["ko"] = ko_text
-        else:
-            return False
-    return True
+from utils.man_file import load_json, save_json
 
 
 def main():
@@ -122,7 +83,7 @@ def main():
         if args.output:
             output = args.output
         else:
-            output = f"ko_data/result_{args.model}.jsonl"
+            output = "results_2/result_{args.model}.jsonl"
         save_json([result], output)
 
 
