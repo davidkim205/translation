@@ -78,7 +78,7 @@ def main():
                 trans = translate_ko2en(text)
             except Exception as e:
                 trans = ""
-        bleu = simple_score(dst, trans, trans_lang)
+        bleu = simple_score(dst, trans)
         bleu = round(bleu, 2)
         result = {
             "index": index,
