@@ -1,6 +1,6 @@
 import torch
 from transformers import pipeline
-from utils.bleu_score import simple_score
+from utils.simple_bleu import simple_score
 
 pipe = pipeline("text-generation", model="Unbabel/TowerInstruct-v0.1", torch_dtype=torch.bfloat16, device_map="auto")
 

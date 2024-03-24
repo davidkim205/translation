@@ -1,5 +1,5 @@
 from transformers import T5ForConditionalGeneration, T5Tokenizer
-from utils.bleu_score import simple_score
+from utils.simple_bleu import simple_score
 import torch
 
 model_name = 'jbochi/madlad400-10b-mt'

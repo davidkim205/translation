@@ -1,6 +1,6 @@
 from transformers import AutoModelForCausalLM, AutoTokenizer, StoppingCriteria, StoppingCriteriaList
 import torch
-from utils.bleu_score import simple_score
+from utils.simple_bleu import simple_score
 import torch
 
 # repo = "/work/kollm/LLaMA-Factory/outputs/mistralai-Mistral-7B-Instruct-v0.2-trans-346k-sft-lora-lr1e-5-e1-b4/checkpoint-15000"
@@ -41,7 +41,7 @@ def generate(prompt):
             return_token_type_ids=False
         ).to("cuda"),
         max_new_tokens=2048,
-        temperature=0.3,
+        temperature=0.9,
         num_beams=5,
         stopping_criteria=stopping_criteria
     )

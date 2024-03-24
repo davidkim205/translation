@@ -4,31 +4,8 @@ import os
 from tqdm import tqdm
 from utils.simple_bleu import simple_score
 from utils.tokenizer import text_tokenize
+from utils.man_file import load_json, save_json
 
-def load_json(filename):
-    json_data = []
-    with open(filename, "r", encoding="utf-8") as f:
-        if os.path.splitext(filename)[1] != ".jsonl":
-            json_data = json.load(f)
-        else:
-            for line in f:
-                json_data.append(json.loads(line))
-    return json_data
-
-
-def save_json(json_data, filename, option="a"):
-    directory, _ = os.path.split(filename)
-    if not os.path.exists(directory):
-        os.makedirs(directory)
-
-    filename = filename.replace(" ", "_")
-    with open(filename, option, encoding="utf-8") as f:
-        if not filename.endswith(".jsonl"):
-            json.dump(json_data, f, ensure_ascii=False, indent=4)
-        else:
-            for data in json_data:
-                json.dump(data, f, ensure_ascii=False)
-                f.write("\n")
 
 def main():
     parser = argparse.ArgumentParser("argument")
@@ -48,7 +25,6 @@ def main():
     parser.add_argument("--model", default="iris_mistral", type=str, help="model")
     args = parser.parse_args()
     json_data = load_json(args.input_file)
-
 
     if args.model == "gugugo":
         from models.gugugo import translate_en2ko, translate_ko2en
@@ -83,8 +59,7 @@ def main():
         chat = data["conversations"]
         src = data["src"]
         input = chat[0]["value"]
-        reference = chat[1]["value"]
-        
+
         def clean_text(text):
             if chat[0]["value"].find("한글로 번역하세요.") != -1:
                 cur_lang = "en"
@@ -104,14 +79,17 @@ def main():
             except Exception as e:
                     trans = ""
             return trans
-        generation = do_translation(input, cur_lang)
+        generation1 = do_translation(input, cur_lang)
+        next_lang = "ko" if cur_lang == "en" else "en"
+        generation2 = do_translation(generation1, next_lang)
 
-        bleu = simple_score(reference, generation)
+        bleu = simple_score(input, generation2)
         bleu = round(bleu, 3)
         result = {
             "index": index,
-            "reference": reference,
-            "generation": generation,
+            "reference": input,
+            "generation": generation2,
+            "generation1": generation1,
             "bleu": bleu,
             "lang": cur_lang,
             "model": args.model,
@@ -126,7 +104,7 @@ def main():
                 filename = args.model_path.split('/')[-1]
             else:
                 filename = args.model
-            output = f"results/result-{args.model}-{filename}.jsonl"
+            output = f"results_self/result_self-{args.model}-{filename}.jsonl"
         save_json([result], output)
 
 

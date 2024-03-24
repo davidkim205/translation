@@ -1,4 +1,4 @@
-from utils.bleu_score import simple_score
+from utils.simple_bleu import simple_score
 from transformers import AutoModelForCausalLM, AutoTokenizer
 import torch
 

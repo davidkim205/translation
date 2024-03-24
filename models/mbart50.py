@@ -1,6 +1,6 @@
 from transformers import MBartForConditionalGeneration, MBart50TokenizerFast
 import torch
-from utils.bleu_score import simple_score
+from utils.simple_bleu import simple_score
 
 model = MBartForConditionalGeneration.from_pretrained("facebook/mbart-large-50-many-to-many-mmt", torch_dtype=torch.bfloat16, device_map="auto")
 tokenizer = MBart50TokenizerFast.from_pretrained("facebook/mbart-large-50-many-to-many-mmt")

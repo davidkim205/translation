@@ -1,6 +1,6 @@
 from transformers import AutoModelForCausalLM, AutoTokenizer, StoppingCriteria, StoppingCriteriaList
 import torch
-from utils.bleu_score import simple_score
+from utils.simple_bleu import simple_score
 import torch
 
 repo = "squarelike/Gugugo-koen-7B-V1.1"
