@@ -3,6 +3,8 @@ import json
 import os
 from tqdm import tqdm
 from utils.simple_bleu import simple_score
+
+
 def load_json(filename):
     json_data = []
     with open(filename, "r", encoding="utf-8") as f:
@@ -32,7 +34,7 @@ def main():
     parser = argparse.ArgumentParser("argument")
     parser.add_argument(
         "--input_file",
-        default="/work/translation/data/komt-1810k-test.jsonl",
+        default="./data/komt-1810k-test.jsonl",
         type=str,
         help="input_file",
     )
@@ -43,10 +45,9 @@ def main():
         help="model path",
     )
     parser.add_argument("--output", default="", type=str, help="model path")
-    parser.add_argument("--model", default="iris_mistral", type=str, help="model")
+    parser.add_argument("--model", default="iris_7b", type=str, help="model")
     args = parser.parse_args()
     json_data = load_json(args.input_file)
-
 
     if args.model == "gugugo":
         from models.gugugo import translate_en2ko, translate_ko2en
@@ -58,26 +59,15 @@ def main():
         from models.nllb200 import translate_ko2en, translate_en2ko
     elif args.model == "TowerInstruct":
         from models.TowerInstruct import translate_ko2en, translate_en2ko
-    elif args.model == "iris_qwen_14b":
-        from models.iris_qwen_14b import translate_ko2en, translate_en2ko
-    elif args.model == "iris_qwen_7b":
-        from models.iris_qwen_7b import translate_ko2en, translate_en2ko
-    elif args.model == "iris_qwen_4b":
-        from models.iris_qwen_4b import translate_ko2en, translate_en2ko
-    elif args.model == "iris_solar":
-        from models.iris_solar import translate_ko2en, translate_en2ko
-    elif args.model == "iris_mistral":
-        from models.iris_mistral import translate_ko2en, translate_en2ko
-
-        if args.model_path:
-            from models.iris_mistral import load_model
-
-            load_model(args.model_path)
     elif args.model == "synatra":
         from models.synatra import translate_ko2en, translate_en2ko
-        
+    elif args.model == "iris_7b":
+        from models.iris_7b import translate_ko2en, translate_en2ko
+        if args.model_path:
+            from models.iris_7b import load_model
+            load_model(args.model_path)
+
     for index, data in tqdm(enumerate(json_data)):
-        # {"conversations": [{"from": "human", "value": "다음 문장을 한글로 번역하세요.\nDior is giving me all of my fairytale fantasies."}, {"from": "gpt", "value": "디올이 나에게 모든 동화적 환상을 심어주고 있어."}], "src": "aihub-MTPE"}
         chat = data["conversations"]
         src = data["src"]
         input = chat[0]["value"]
