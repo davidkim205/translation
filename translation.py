@@ -3,8 +3,6 @@ import json
 import os
 from tqdm import tqdm
 from utils.simple_bleu import simple_score
-from utils.tokenizer import text_tokenize
-
 def load_json(filename):
     json_data = []
     with open(filename, "r", encoding="utf-8") as f:
