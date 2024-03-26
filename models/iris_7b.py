@@ -61,14 +61,18 @@ def seed_everything(seed: int):
     torch.backends.cudnn.deterministic = True
     torch.backends.cudnn.benchmark = True
 
-model = AutoModelForCausalLM.from_pretrained(args_model_name, device_map="auto")
-tokenizer = AutoTokenizer.from_pretrained(args_model_name)
-model.eval()
 
+model = AutoModelForCausalLM.from_pretrained(args_model_name, torch_dtype=torch.bfloat16, device_map="auto")
+tokenizer = AutoTokenizer.from_pretrained(args_model_name)
 stopping_criteria = StoppingCriteriaList(
-    [LocalStoppingCriteria(tokenizer=tokenizer, stop_words=[tokenizer.eos_token])])
+    [LocalStoppingCriteria(tokenizer=tokenizer, stop_words=[tokenizer.eos_token, '<|im_end|>'])])
 streamer = TextStreamer(tokenizer)
 
+def load_model(model_name):
+    global  model, tokenizer
+    model = AutoModelForCausalLM.from_pretrained(model_name, torch_dtype=torch.bfloat16, device_map="auto")
+    tokenizer = AutoTokenizer.from_pretrained(model_name)
+    model.eval()
 def generation(x):
     generation_config = GenerationConfig(
         temperature=1.0,
