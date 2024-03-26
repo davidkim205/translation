@@ -1,6 +1,5 @@
 from nltk.translate.bleu_score import sentence_bleu,SmoothingFunction
 from utils.tokenizer import tokenize
-import re
 
 
 def simple_score(text1, text2):

@@ -1,12 +1,12 @@
 from kiwipiepy import Kiwi
 from nltk.tokenize import word_tokenize
-
+import re
 kiwi = Kiwi()
 
 
 def is_korean(text):
     for char in text:
-        if '가' <= char <= '힣':
+        if "가" <= char <= "힣":
             return True
     return False
 
@@ -20,6 +20,7 @@ def text_tokenize(src):
 
 
 def tokenize(src):
+    src = re.sub("\n+", " ", src)
     if is_korean(src):
         token_list = kiwi.tokenize(src, normalize_coda=True)
         results=[]
