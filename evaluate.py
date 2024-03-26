@@ -6,7 +6,12 @@ import statistics
 import argparse
 import json
 import os
+from utils.tokenizer import tokenize
 
+
+def check_dup(reference, generation):
+    reference = tokenize(reference)
+    generation = tokenize(generation)
 
 
 def main():

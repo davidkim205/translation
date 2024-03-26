@@ -1,6 +1,14 @@
 from kiwipiepy import Kiwi
+from nltk.tokenize import word_tokenize
 
 kiwi = Kiwi()
+
+
+def is_korean(text):
+    for char in text:
+        if '가' <= char <= '힣':
+            return True
+    return False
 
 
 def text_tokenize(src):
@@ -10,17 +18,22 @@ def text_tokenize(src):
         results += f" {token.form}"
     return results
 
+
 def tokenize(src):
-    token_list = kiwi.tokenize(src, normalize_coda=True)
-    results=[]
-    for token in token_list:
-        results.append(token.form)
-    return results
+    if is_korean(src):
+        token_list = kiwi.tokenize(src, normalize_coda=True)
+        results=[]
+        for token in token_list:
+            results.append(token.form)
+        return results
+    else:
+        return word_tokenize(src.lower())
+    
 
 def main():
     while True:
         text = input('>')
-        result = text_tokenize(text)
+        result = tokenize(text)
         print(result)
 
 if __name__ == "__main__":
