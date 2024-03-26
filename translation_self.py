@@ -63,10 +63,11 @@ def main():
     elif args.model == "synatra":
         from models.synatra import translate_ko2en, translate_en2ko
     elif args.model == "iris_7b":
-        from models.iris_7b import translate_ko2en, translate_en2ko
+        from models.iris_7b import translate_ko2en, translate_en2ko, load_model
         if args.model_path:
-            from models.iris_7b import load_model
             load_model(args.model_path)
+        else:
+            load_model()
 
     for index, data in tqdm(enumerate(json_data)):
         chat = data["conversations"]
