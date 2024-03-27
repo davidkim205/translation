@@ -3,36 +3,35 @@ import torch
 from utils.simple_bleu import simple_score
 import torch
 
-
-templates={
-    'davidkim205/iris-7b':{
-        'stop_words':['</s>'],
-        'ko2en':'[INST] 다음 문장을 영어로 번역하세요.{0} [/INST]',
-        'en2ko':'[INST] 다음 문장을 한글로 번역하세요.{0} [/INST]',
-        'trim_keywords':['</s>'],
+templates = {
+    'davidkim205/iris-7b': {
+        'stop_words': ['</s>'],
+        'ko2en': '[INST] 다음 문장을 영어로 번역하세요.{0} [/INST]',
+        'en2ko': '[INST] 다음 문장을 한글로 번역하세요.{0} [/INST]',
+        'trim_keywords': ['</s>'],
     },
-    'squarelike/Gugugo-koen-7B-V1.1':{
-        'stop_words':['</s>', '</끝>'],
-        'ko2en':'### 한국어: {0}</끝>\n### 영어:',
-        'en2ko':"### 영어: {0}</끝>\n### 한국어:",
-        'trim_keywords':['</s>', '</끝>'],
+    'squarelike/Gugugo-koen-7B-V1.1': {
+        'stop_words': ['</s>', '</끝>'],
+        'ko2en': '### 한국어: {0}</끝>\n### 영어:',
+        'en2ko': "### 영어: {0}</끝>\n### 한국어:",
+        'trim_keywords': ['</s>', '</끝>'],
     },
-    'maywell/Synatra-7B-v0.3-Translation':{
-        'stop_words':['</s>', '</끝>', '<|im_end|>'],
-        'ko2en':'<|im_start|>system\n주어진 문장을 영어로 번역해라.<|im_end|>\n<|im_start|>user\n{0}<|im_end|>\n<|im_start|>assistant',
-        'en2ko':'<|im_start|>system\n주어진 문장을 한국어로 번역해라.<|im_end|>\n<|im_start|>user\n{0}<|im_end|>\n<|im_start|>assistant',
-        'trim_keywords':['<|im_end|>'],
+    'maywell/Synatra-7B-v0.3-Translation': {
+        'stop_words': ['</s>', '</끝>', '<|im_end|>'],
+        'ko2en': '<|im_start|>system\n주어진 문장을 영어로 번역해라.<|im_end|>\n<|im_start|>user\n{0}<|im_end|>\n<|im_start|>assistant',
+        'en2ko': '<|im_start|>system\n주어진 문장을 한국어로 번역해라.<|im_end|>\n<|im_start|>user\n{0}<|im_end|>\n<|im_start|>assistant',
+        'trim_keywords': ['<|im_end|>'],
     },
-    'Unbabel/TowerInstruct-7B-v0.1':{
-        'stop_words':['</s>', '</끝>', '<|im_end|>'],
-        'ko2en':'<|im_start|>user\nTranslate the following text from English into Korean.\nKorean: {0}\nEnglish:<|im_end|>\n<|im_start|>assistant',
-        'en2ko':'<|im_start|>user\nTranslate the following text from Korean into English.\nEnglish: {0}\nKorean:<|im_end|>\n<|im_start|>assistant',
-        'trim_keywords':['<|im_end|>'],
+    'Unbabel/TowerInstruct-7B-v0.1': {
+        'stop_words': ['</s>', '</끝>', '<|im_end|>'],
+        'ko2en': '<|im_start|>user\nTranslate the following text from English into Korean.\nKorean: {0}\nEnglish:<|im_end|>\n<|im_start|>assistant',
+        'en2ko': '<|im_start|>user\nTranslate the following text from Korean into English.\nEnglish: {0}\nKorean:<|im_end|>\n<|im_start|>assistant',
+        'trim_keywords': ['<|im_end|>'],
     },
 }
 
+model_info = {'model': None, 'tokenizer': None, 'stopping_criteria': None}
 
-model_info={'model':None,'tokenizer':None,'stopping_criteria':None}
 
 class LocalStoppingCriteria(StoppingCriteria):
 
@@ -78,18 +77,6 @@ def trim_sentence(sentence, keywords):
     return sentence
 
 
-def get_stopping_criteria(name):
-    if templates.get(name) == None:
-        return None
-    stop_words = templates[name]['stop_words']
-    stopping_criteria = StoppingCriteriaList([LocalStoppingCriteria(tokenizer=tokenizer, stop_words=stop_words)])
-    return stopping_criteria
-
-
-# stop_words_ids = torch.tensor(
-#     [[829, 45107, 29958], [1533, 45107, 29958], [829, 45107, 29958], [21106, 45107, 29958]]).to("cuda")
-# stopping_criteria = StoppingCriteriaList([StoppingCriteriaSub(stops=stop_words_ids)])
-
 def load_model(path, template_name=None):
     global model_info
     print('load_model', path)
@@ -100,13 +87,13 @@ def load_model(path, template_name=None):
     model = AutoModelForCausalLM.from_pretrained(path, torch_dtype=torch.bfloat16, device_map='auto')
     tokenizer = AutoTokenizer.from_pretrained(path)
 
-    model_info['model']=model
-    model_info['tokenizer']=tokenizer
+    model_info['model'] = model
+    model_info['tokenizer'] = tokenizer
     model_info['template'] = templates[template_name]
-    
+
     stop_words = templates[template_name]['stop_words']
     stopping_criteria = StoppingCriteriaList([LocalStoppingCriteria(tokenizer=tokenizer, stop_words=stop_words)])
-    model_info['stopping_criteria']=stopping_criteria
+    model_info['stopping_criteria'] = stopping_criteria
 
 
 def generate(prompt):
@@ -118,10 +105,10 @@ def generate(prompt):
     tokenizer = model_info['tokenizer']
     stopping_criteria = model_info['stopping_criteria']
     encoding = tokenizer(
-            prompt,
-            return_tensors='pt',
-            return_token_type_ids=False
-        ).to("cuda")
+        prompt,
+        return_tensors='pt',
+        return_token_type_ids=False
+    ).to("cuda")
     gen_tokens = model.generate(
         **encoding,
         max_new_tokens=2048,
@@ -148,10 +135,10 @@ def translate_en2ko(text):
 
 
 def main():
-    #load_model("davidkim205/iris-7b")
-    #load_model("squarelike/Gugugo-koen-7B-V1.1")
-    #load_model("maywell/Synatra-7B-v0.3-Translation")
-    #load_model("Unbabel/TowerInstruct-7B-v0.1")
+    load_model("davidkim205/iris-7b")
+    # load_model("squarelike/Gugugo-koen-7B-V1.1")
+    # load_model("maywell/Synatra-7B-v0.3-Translation")
+    # load_model("Unbabel/TowerInstruct-7B-v0.1")
     while True:
         text = input('>')
         en_text = translate_ko2en(text)

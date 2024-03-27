@@ -1,4 +1,9 @@
-# translation
+# Iris Translation
+![iris-icon.jpeg](assets%2Firis-icon.jpeg)
+
+Welcome to Iris Translation, a project designed to evaluate Korean-to-English translation models. Our project provides a comprehensive framework for evaluating the Iris model that we have developed.
+## Models
+- [davidkim205/iris-7b](https://huggingface.co/davidkim205/iris-7b)
 
 ## Installation
 ``` 
@@ -8,13 +13,25 @@ conda activate translation
 pip install -r requirements.txt
 ```
 ## usage
-### example
+### translate
 ``` 
 python translation2.py --model davidkim205/iris-7b
 ```
 
 ## Evaluation
-
+```
+python evaluate.py results_bleu2/
+```
+output
+``` 
+bleu scores
+TowerInstruct-7B-v0.1-result.jsonl: 0.31, out_of_range_count=8, duplicate=1
+Gugugo-koen-7B-V1.1-result.jsonl: 0.32, out_of_range_count=2, duplicate=1
+Synatra-7B-v0.3-Translation-result.jsonl: 0.35, out_of_range_count=2, duplicate=1
+checkpoint-110000-result.jsonl: 0.39, out_of_range_count=4, duplicate=0
+checkpoint-120000-result.jsonl: 0.40, out_of_range_count=3, duplicate=0
+iris-7b-result.jsonl: 0.40, out_of_range_count=3, duplicate=0
+```
 ### BLEU 
 
 | TYPE        | Model                            | BLEU | SBLEU | Duplicate | Length Exceeds |
@@ -59,3 +76,25 @@ python translation2.py --model davidkim205/iris-7b
 | Cloud       | azure                            | 0.40    |      0.41 |     0.39 |     0.36 |     0.33 |
 | Cloud       | google                           | 0.40    |       0.4 |      0.4 |     0.43 |      0.4 |
 | HuggingFace | davidkim205/iris-7b(**ours**)    | 0.40    |      0.39 |     0.41 |     0.54 |     0.34 |
+
+## test dataset info
+| src                                        | ratio | length |
+|--------------------------------------------| ----- | ------ |
+| aihub-MTPE                                 | 5.56% | 10/180 |
+| aihub-techsci2                             | 5.56% | 10/180 |
+| aihub-expertise                            | 5.56% | 10/180 |
+| aihub-humanities                           | 5.56% | 10/180 |
+| sharegpt-deepl-ko-translation              | 5.56% | 10/180 |
+| aihub-MT-new-corpus                        | 5.56% | 10/180 |
+| aihub-socialsci                            | 5.56% | 10/180 |
+| korean-parallel-corpora                    | 5.56% | 10/180 |
+| aihub-parallel-translation                 | 5.56% | 10/180 |
+| aihub-food                                 | 5.56% | 10/180 |
+| aihub-techsci                              | 5.56% | 10/180 |
+| para_pat                                   | 5.56% | 10/180 |
+| aihub-speechtype-based-machine-translation | 5.56% | 10/180 |
+| koopus100                                  | 5.56% | 10/180 |
+| aihub-basicsci                             | 5.56% | 10/180 |
+| aihub-broadcast-content                    | 5.56% | 10/180 |
+| aihub-patent                               | 5.56% | 10/180 |
+| aihub-colloquial                           | 5.56% | 10/180 |
