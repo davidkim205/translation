@@ -3,9 +3,9 @@ import torch
 from utils.simple_bleu import simple_score
 import torch
 
-# repo = "davidkim205/iris-7b"
-# model = AutoModelForCausalLM.from_pretrained(repo, torch_dtype=torch.bfloat16, device_map='auto')
-# tokenizer = AutoTokenizer.from_pretrained(repo)
+repo = "davidkim205/iris-7b"
+model = AutoModelForCausalLM.from_pretrained(repo, torch_dtype=torch.bfloat16, device_map='auto')
+tokenizer = AutoTokenizer.from_pretrained(repo)
 # model = None
 # tokenizer = None
 
@@ -26,10 +26,9 @@ stop_words_ids = torch.tensor(
     [[829, 45107, 29958], [1533, 45107, 29958], [829, 45107, 29958], [21106, 45107, 29958]]).to("cuda")
 stopping_criteria = StoppingCriteriaList([StoppingCriteriaSub(stops=stop_words_ids)])
 
-def load_model(path="davidkim205/iris-7b"):
+def load_model(path):
     global model, tokenizer
-    if path != "davidkim205/iris-7b":
-        print('load_model', path)
+    print('load_model', path)
     model = AutoModelForCausalLM.from_pretrained(path, torch_dtype=torch.bfloat16, device_map='auto')
     tokenizer = AutoTokenizer.from_pretrained(path)
 
