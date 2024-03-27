@@ -34,7 +34,7 @@ def generate(prompt):
             return_token_type_ids=False
         ).to("cuda"),
         max_new_tokens=2048,
-        temperature=0.3,
+        temperature=0.1,
         num_beams=5,
         stopping_criteria=stopping_criteria
     )
