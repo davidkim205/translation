@@ -49,13 +49,13 @@ python translation2.py --model davidkim205/iris-7b
 
 ### BLEU by sentence length
 
-| Type        | Model                            |  ~50 | ~500 | ~1000 | ~1500 |
-| ----------- | :------------------------------- | ---: | ---: | ----: | ----: |
-| HuggingFace | facebook/nllb-200-distilled-1.3B | 0.29 | 0.27 |  0.26 |  0.26 |
-| HuggingFace | jbochi/madlad400-10b-mt          | 0.35 | 0.31 |   0.3 |  0.29 |
-| HuggingFace | Unbabel/TowerInstruct-7B-v0.1    | 0.35 | 0.32 |  0.32 |  0.32 |
-| HuggingFace | squarelike/Gugugo-koen-7B-V1.1   | 0.35 | 0.32 |  0.32 |  0.32 |
-| Cloud       | deepl                            | 0.41 | 0.39 |  0.39 |  0.39 |
-| Cloud       | azure                            | 0.43 |  0.4 |   0.4 |   0.4 |
-| Cloud       | google                           | 0.42 |  0.4 |   0.4 |   0.4 |
-| HuggingFace | davidkim205/iris-7b(**ours**)    | 0.39 | 0.39 |   0.4 |   0.4 |
+| Type        | Model                            | Average | ~100(111) | ~500(61) | ~1000(6) | ~1500(2) |
+| ----------- | :------------------------------- | ------- | --------: | -------: | -------: | -------: |
+| HuggingFace | facebook/nllb-200-distilled-1.3B | 0.26    |      0.28 |     0.25 |     0.16 |     0.06 |
+| HuggingFace | jbochi/madlad400-10b-mt          | 0.29    |      0.32 |     0.27 |     0.09 |     0.01 |
+| HuggingFace | Unbabel/TowerInstruct-7B-v0.1    | 0.32    |      0.33 |     0.31 |     0.21 |     0.19 |
+| HuggingFace | squarelike/Gugugo-koen-7B-V1.1   | 0.32    |      0.33 |      0.3 |     0.31 |     0.21 |
+| Cloud       | deepl                            | 0.39    |      0.39 |      0.4 |     0.43 |     0.39 |
+| Cloud       | azure                            | 0.40    |      0.41 |     0.39 |     0.36 |     0.33 |
+| Cloud       | google                           | 0.40    |       0.4 |      0.4 |     0.43 |      0.4 |
+| HuggingFace | davidkim205/iris-7b(**ours**)    | 0.40    |      0.39 |     0.41 |     0.54 |     0.34 |
