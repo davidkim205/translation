@@ -17,19 +17,16 @@ python translation2.py --model davidkim205/iris-7b
 
 ### BLEU 
 
-| model                          | BLEU | SBLEU |
-| ------------------------------ | ---- | ----- |
-| ...                            |      |       |
-| squarelike/Gugugo-koen-7B-V1.1 | 0.4  | 0.3   |
-| davidkim205/iris-7b(**ours**)  | 0.5  | 0.4   |
-
-
-
-| cloud api                     | BLEU | SBLEU |
-| ----------------------------- | ---- | ----- |
-| papago                        | 0.2  | 0.3   |
-| google api                    | 0.4  | 0.3   |
-| davidkim205/iris-7b(**ours**) | 0.5  | 0.4   |
+| TYPE        | Model                            | BLEU | SBLEU |
+| ----------- | :------------------------------- | ---- | ----- |
+| HuggingFace | facebook/nllb-200-distilled-1.3B | 0.26 | 0.30  |
+| HuggingFace | jbochi/madlad400-10b-mt          | 0.29 | 0.38  |
+| HuggingFace | Unbabel/TowerInstruct-7B-v0.1    | 0.32 | 0.39  |
+| HuggingFace | squarelike/Gugugo-koen-7B-V1.1   | 0.32 | 0.36  |
+| Cloud       | Deepl                            | 0.39 | 0.45  |
+| Cloud       | Azure                            | 0.40 | 0.49  |
+| Cloud       | Google                           | 0.40 | 0.49  |
+| HuggingFace | davidkim205/iris-7b(**ours**)    | 0.40 | 0.43  |
 
 * SBLEU: Self-evaluation BLEU
 
