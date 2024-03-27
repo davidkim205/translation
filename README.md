@@ -19,14 +19,14 @@ python translation2.py --model davidkim205/iris-7b
 
 | TYPE        | Model                            | BLEU | SBLEU | Duplicate | Length Exceeds |
 | ----------- | :------------------------------- | ---- | ----- | --------- | -------------- |
-| HuggingFace | facebook/nllb-200-distilled-1.3B | 0.26 | 0.30  | 1 / 180   | 3 / 180        |
-| HuggingFace | jbochi/madlad400-10b-mt          | 0.29 | 0.38  | 3 / 180   | 6 / 180        |
-| HuggingFace | Unbabel/TowerInstruct-7B-v0.1    | 0.32 | 0.39  | 1 / 180   | 9 / 180        |
-| HuggingFace | squarelike/Gugugo-koen-7B-V1.1   | 0.32 | 0.36  | 1 / 180   | 3 / 180        |
-| Cloud       | Deepl                            | 0.39 | 0.45  | 0 / 180   | 1 / 180        |
-| Cloud       | Azure                            | 0.40 | 0.49  | 0 / 180   | 3 / 180        |
-| Cloud       | Google                           | 0.40 | 0.49  | 0 / 180   | 2 / 180        |
-| HuggingFace | davidkim205/iris-7b(**ours**)    | 0.40 | 0.43  | 0 / 180   | 3 / 180        |
+| HuggingFace | facebook/nllb-200-distilled-1.3B | 0.26 | 0.30  | 1         | 3              |
+| HuggingFace | jbochi/madlad400-10b-mt          | 0.29 | 0.38  | 3         | 6              |
+| HuggingFace | Unbabel/TowerInstruct-7B-v0.1    | 0.32 | 0.39  | 1         | 9              |
+| HuggingFace | squarelike/Gugugo-koen-7B-V1.1   | 0.32 | 0.36  | 1         | 3              |
+| Cloud       | Deepl                            | 0.39 | 0.45  | 0         | 1              |
+| Cloud       | Azure                            | 0.40 | 0.49  | 0         | 3              |
+| Cloud       | Google                           | 0.40 | 0.49  | 0         | 2              |
+| HuggingFace | davidkim205/iris-7b(**ours**)    | 0.40 | 0.43  | 0         | 3              |
 
 * SBLEU: Self-evaluation BLEU
 
