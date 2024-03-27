@@ -64,10 +64,9 @@ def main():
         from models.synatra import translate_ko2en, translate_en2ko
     elif args.model == "iris_7b":
         from models.iris_7b import translate_ko2en, translate_en2ko, load_model
+
         if args.model_path:
             load_model(args.model_path)
-        else:
-            load_model()
 
     for index, data in tqdm(enumerate(json_data)):
         chat = data["conversations"]
@@ -77,12 +76,14 @@ def main():
         def clean_text(text):
             if chat[0]["value"].find("한글로 번역하세요.") != -1:
                 cur_lang = "en"
-            
+
             else:
                 cur_lang = "ko"
             text = text.split("번역하세요.\n", 1)[-1]
             return text, cur_lang
+
         input, cur_lang = clean_text(input)
+
         def do_translation(text, cur_lang):
             trans = ""
             try:
@@ -91,8 +92,9 @@ def main():
                 else:
                     trans = translate_ko2en(text)
             except Exception as e:
-                    trans = ""
+                trans = ""
             return trans
+
         generation1 = do_translation(input, cur_lang)
         next_lang = "ko" if cur_lang == "en" else "en"
         generation2 = do_translation(generation1, next_lang)
@@ -108,14 +110,14 @@ def main():
             "lang": cur_lang,
             "model": args.model,
             "src": src,
-            'conversations':chat
+            "conversations": chat,
         }
         print(json.dumps(result, ensure_ascii=False, indent=2))
         if args.output:
             output = args.output
         else:
             if args.model_path:
-                filename = args.model_path.split('/')[-1]
+                filename = args.model_path.split("/")[-1]
             else:
                 filename = args.model
             output = f"results_self/result_self-{args.model}-{filename}.jsonl"

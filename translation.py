@@ -65,8 +65,6 @@ def main():
         from models.iris_7b import translate_ko2en, translate_en2ko, load_model
         if args.model_path:
             load_model(args.model_path)
-        else:
-            load_model()
 
     for index, data in tqdm(enumerate(json_data)):
         chat = data["conversations"]
