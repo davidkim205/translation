@@ -2,25 +2,61 @@
 ![iris-icon.jpeg](assets%2Firis-icon.jpeg)
 
 Welcome to Iris Translation, a project designed to evaluate Korean-to-English translation models. Our project provides a comprehensive framework for evaluating the Iris model that we have developed.
+
 ## Models
+
 - [davidkim205/iris-7b](https://huggingface.co/davidkim205/iris-7b)
+- [squarelike/Gugugo-koen-7B-V1.1](https://huggingface.co/squarelike/Gugugo-koen-7B-V1.1)
+- [maywell/Synatra-7B-v0.3-Translation](https://huggingface.co/maywell/Synatra-7B-v0.3-Translation)
+- [Unbabel/TowerInstruct-7B-v0.1](https://huggingface.co/Unbabel/TowerInstruct-7B-v0.1)
+- [jbochi/madlad400-10b-mt](https://huggingface.co/jbochi/madlad400-10b-mt)
+- [facebook/mbart-large-50-many-to-many-mmt](https://huggingface.co/facebook/mbart-large-50-many-to-many-mmt)
+- [facebook/nllb-200-distilled-1.3B](https://huggingface.co/facebook/nllb-200-distilled-1.3B)
 
 ## Installation
+
 ``` 
 conda create -n translation python=3.10
 conda activate translation
 
 pip install -r requirements.txt
 ```
-## usage
-### translate
+## Usage
+
+### translate2(Bleu and SBleu)
+
+**executable model**
+
+- davidkim205/iris-7b
+- squarelike/Gugugo-koen-7B-V1.1
+- maywell/Synatra-7B-v0.3-Translation
+- Unbabel/TowerInstruct-7B-v0.1
+
 ``` 
 python translation2.py --model davidkim205/iris-7b
 ```
 
-## Evaluation
+### translate(Bleu), translate_self(SBleu)
+
+**executable model**
+
+- iris_7b
+- gugugo
+- madlad400
+- mbart50
+- nllb200
+- TowerInstruct
+- synatra
+
 ```
-python evaluate.py results_bleu2/
+python translation.py --model iris_7b
+python translation_self.py --model iris_7b
+```
+
+## Evaluation
+
+```
+python evaluate.py results_bleu/
 ```
 output
 ``` 
