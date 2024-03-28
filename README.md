@@ -2,36 +2,91 @@
 ![iris-icon.jpeg](assets%2Firis-icon.jpeg)
 
 Welcome to Iris Translation, a project designed to evaluate Korean-to-English translation models. Our project provides a comprehensive framework for evaluating the Iris model that we have developed.
+
 ## Models
+
 - [davidkim205/iris-7b](https://huggingface.co/davidkim205/iris-7b)
+- [squarelike/Gugugo-koen-7B-V1.1](https://huggingface.co/squarelike/Gugugo-koen-7B-V1.1)
+- [maywell/Synatra-7B-v0.3-Translation](https://huggingface.co/maywell/Synatra-7B-v0.3-Translation)
+- [Unbabel/TowerInstruct-7B-v0.1](https://huggingface.co/Unbabel/TowerInstruct-7B-v0.1)
+- [jbochi/madlad400-10b-mt](https://huggingface.co/jbochi/madlad400-10b-mt)
+- [facebook/mbart-large-50-many-to-many-mmt](https://huggingface.co/facebook/mbart-large-50-many-to-many-mmt)
+- [facebook/nllb-200-distilled-1.3B](https://huggingface.co/facebook/nllb-200-distilled-1.3B)
 
 ## Installation
+
 ``` 
 conda create -n translation python=3.10
 conda activate translation
 
 pip install -r requirements.txt
 ```
-## usage
-### translate
+## Usage
+
+### translate2(Bleu and SBleu)
+
+**executable model**
+
+- davidkim205/iris-7b
+- squarelike/Gugugo-koen-7B-V1.1
+- maywell/Synatra-7B-v0.3-Translation
+- Unbabel/TowerInstruct-7B-v0.1
+
 ``` 
 python translation2.py --model davidkim205/iris-7b
 ```
 
+### translate(Bleu), translate_self(SBleu)
+
+**executable model**
+
+- iris_7b
+- gugugo
+- madlad400
+- mbart50
+- nllb200
+- TowerInstruct
+- synatra
+
+```
+python translation.py --model iris_7b
+python translation_self.py --model iris_7b
+```
+
 ## Evaluation
+
 ```
-python evaluate.py results_bleu2/
+python evaluate.py results_bleu/
+python evaluate.py results_self/
 ```
-output
+output(bleu)
 ``` 
 bleu scores
-TowerInstruct-7B-v0.1-result.jsonl: 0.31, out_of_range_count=8, duplicate=1
-Gugugo-koen-7B-V1.1-result.jsonl: 0.32, out_of_range_count=2, duplicate=1
-Synatra-7B-v0.3-Translation-result.jsonl: 0.35, out_of_range_count=2, duplicate=1
-checkpoint-110000-result.jsonl: 0.39, out_of_range_count=4, duplicate=0
-checkpoint-120000-result.jsonl: 0.40, out_of_range_count=3, duplicate=0
-iris-7b-result.jsonl: 0.40, out_of_range_count=3, duplicate=0
+result_bleu-nllb200.jsonl: 0.26, out_of_range_count=3, duplicate=1
+result_bleu-madlad400.jsonl: 0.29, out_of_range_count=6, duplicate=3
+result_bleu-TowerInstruct.jsonl: 0.32, out_of_range_count=9, duplicate=1
+result_bleu-gugugo.jsonl: 0.32, out_of_range_count=3, duplicate=1
+result_bleu-Synatra-7B-v0.3-Translation.jsonl: 0.35, out_of_range_count=2, duplicate=1
+result_bleu-deepl.jsonl: 0.39, out_of_range_count=1, duplicate=0
+result_bleu-azure.jsonl: 0.40, out_of_range_count=2, duplicate=0
+result_bleu-google.jsonl: 0.40, out_of_range_count=3, duplicate=0
+result_bleu-iris_7b.jsonl: 0.40, out_of_range_count=3, duplicate=0
 ```
+output(sbleu)
+
+```
+bleu scores
+result_self-nllb200.jsonl: 0.30, out_of_range_count=1, duplicate=1
+result_self-gugugo.jsonl: 0.36, out_of_range_count=1, duplicate=1
+result_self-madlad400.jsonl: 0.38, out_of_range_count=3, duplicate=2
+result_self-TowerInstruct.jsonl: 0.39, out_of_range_count=3, duplicate=0
+result_self-Synatra-7B-v0.3-Translation.jsonl: 0.41, out_of_range_count=2, duplicate=1
+result_self-deepl.jsonl: 0.45, out_of_range_count=0, duplicate=0
+result_self-azure.jsonl: 0.49, out_of_range_count=0, duplicate=1
+result_self-google.jsonl: 0.49, out_of_range_count=0, duplicate=0
+result_self-iris_7b.jsonl: 0.43, out_of_range_count=1, duplicate=0
+```
+
 ### BLEU 
 
 | TYPE        | Model                            | BLEU | SBLEU | Duplicate | Length Exceeds |
