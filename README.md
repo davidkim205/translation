@@ -133,23 +133,23 @@ result_self-iris_7b.jsonl: 0.43, out_of_range_count=1, duplicate=0
 | HuggingFace | davidkim205/iris-7b(**ours**)    | 0.56    |     0.51 |     0.58 |      0.62 |      0.54 |
 
 ## test dataset info
-| src                                        | ratio | length | description                                  |
-|--------------------------------------------|-------|--------|----------------------------------------------|
-| aihub-MTPE                                 | 5.56% | 10/180 | 기계번역 품질 사후검증 데이터셋                            |
-| aihub-techsci2                             | 5.56% | 10/180 | ICT, 전기/전자 등 기술과학 분야 한영 번역 데이터셋	             |
-| aihub-expertise                            | 5.56% | 10/180 | 의료, 금융, 스포츠 등 전문분야 한영 번역 데이터셋	               |
-| aihub-humanities                           | 5.56% | 10/180 | 인문학 분야 한영 번역 데이터셋	                           |
-| sharegpt-deepl-ko-translation              | 5.56% | 10/180 | shareGPT 데이터셋을 질답 형식에서 한영 번역 형식으로 변환한 데이터셋 	 |
-| aihub-MT-new-corpus                        | 5.56% | 10/180 | 기계 번역 앱 구축용 한영 번역 데이터셋	                      |
-| aihub-socialsci                            | 5.56% | 10/180 | 법률, 교육, 경제 등 사회과학 분야 한영 번역 데이터셋	             |
-| korean-parallel-corpora                    | 5.56% | 10/180 | 한영 번역 병렬 데이터셋                                |
-| aihub-parallel-translation                 | 5.56% | 10/180 | 발화 유형 및 분야별 한영 번역 데이터셋	                      |
-| aihub-food                                 | 5.56% | 10/180 | 식품 분야 영한 번역 데이터셋	                            |
-| aihub-techsci                              | 5.56% | 10/180 | ICT, 전기/전자 등 기술과학 분야 한영 번역 데이터셋	             |
-| para_pat                                   | 5.56% | 10/180 | ParaPat 데이터셋의 영어-한국어 subset	                 |
-| aihub-speechtype-based-machine-translation | 5.56% | 10/180 | 발화 유형별 영한 번역 데이터셋	                           |
-| koopus100                                  | 5.56% | 10/180 | OPUS-100 데이터셋의 영어-한국어 subse                  |
-| aihub-basicsci                             | 5.56% | 10/180 | 수학, 물리학 등 기초과학 분야 한영 번역 데이터셋	                |
-| aihub-broadcast-content                    | 5.56% | 10/180 | 방송 콘텐츠 분야 한영 번역 데이터셋	                        |
-| aihub-patent                               | 5.56% | 10/180 | 특허명세서 영한 번역 데이터셋                             |
-| aihub-colloquial                           | 5.56% | 10/180 | 신조어, 약어 등을 포함하는 구어체 한영 번역 데이터셋               |
+| src                                        | ratio | length | description                                                  |
+| ------------------------------------------ | ----- | ------ | ------------------------------------------------------------ |
+| aihub-MTPE                                 | 5.56% | 10/180 | 기계번역 품질 사후검증 데이터셋                              |
+| aihub-techsci2                             | 5.56% | 10/180 | ICT, 전기/전자 등 기술과학 분야 한영 번역 데이터셋           |
+| aihub-expertise                            | 5.56% | 10/180 | 의료, 금융, 스포츠 등 전문분야 한영 번역 데이터셋            |
+| aihub-humanities                           | 5.56% | 10/180 | 인문학 분야 한영 번역 데이터셋                               |
+| sharegpt-deepl-ko-translation              | 5.56% | 10/180 | shareGPT 데이터셋을 질답 형식에서 한영 번역 형식으로 변환한 데이터셋 |
+| aihub-MT-new-corpus                        | 5.56% | 10/180 | 기계 번역 앱 구축용 한영 번역 데이터셋                       |
+| aihub-socialsci                            | 5.56% | 10/180 | 법률, 교육, 경제 등 사회과학 분야 한영 번역 데이터셋         |
+| korean-parallel-corpora                    | 5.56% | 10/180 | 한영 번역 병렬 데이터셋, 원문이 잘못 번역되어 reference 퀄리티가 낮음 |
+| aihub-parallel-translation                 | 5.56% | 10/180 | 발화 유형 및 분야별 한영 번역 데이터셋                       |
+| aihub-food                                 | 5.56% | 10/180 | 식품 분야 영한 번역 데이터셋                                 |
+| aihub-techsci                              | 5.56% | 10/180 | ICT, 전기/전자 등 기술과학 분야 한영 번역 데이터셋           |
+| para_pat                                   | 5.56% | 10/180 | ParaPat 데이터셋의 영어-한국어 subset                        |
+| aihub-speechtype-based-machine-translation | 5.56% | 10/180 | 발화 유형별 영한 번역 데이터셋                               |
+| koopus100                                  | 5.56% | 10/180 | OPUS-100 데이터셋의 영어-한국어 subset, 원문이 잘못 번역되어 reference 퀄리티가 낮음 |
+| aihub-basicsci                             | 5.56% | 10/180 | 수학, 물리학 등 기초과학 분야 한영 번역 데이터셋             |
+| aihub-broadcast-content                    | 5.56% | 10/180 | 방송 콘텐츠 분야 한영 번역 데이터셋                          |
+| aihub-patent                               | 5.56% | 10/180 | 특허명세서 영한 번역 데이터셋                                |
+| aihub-colloquial                           | 5.56% | 10/180 | 신조어, 약어 등을 포함하는 구어체 한영 번역 데이터셋         |
