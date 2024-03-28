@@ -29,8 +29,6 @@ pip install -r requirements.txt
 
 translate와 translate_self를 모두 수행합니다.
 
-사용가능한 모델은 다음과 같습니다.
-
 **executable model**
 
 - davidkim205/iris-7b
@@ -44,9 +42,7 @@ python translation2.py --model davidkim205/iris-7b
 
 ### translate(Bleu)
 
-원문을 번역하여 실제 번역과 비교한 결과를 `results_bleu`에 저장합니다.
-
-사용가능한 모델은 다음과 같습니다.
+원문을 번역하여 실제 번역과 비교한 결과를 `results_bleu/`에 저장합니다.
 
 **executable model**
 
@@ -64,7 +60,7 @@ python translation.py --model iris_7b
 
 ### translate_self(SBleu)
 
-번역 결과를 다시 번역하여 원문과 비교한 결과를 `results_self`에 저장합니다.
+번역문을 다시 번역하여 원문과 비교한 결과를 `results_self/`에 저장합니다.
 
 **executable model**
 
