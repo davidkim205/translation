@@ -26,51 +26,21 @@ pip install -r requirements.txt
 ## Usage
 
 ### translate2(Bleu and SBleu)
-
 translate와 translate_self를 모두 수행합니다.
-
-**executable model**
-
-- davidkim205/iris-7b
-- squarelike/Gugugo-koen-7B-V1.1
-- maywell/Synatra-7B-v0.3-Translation
-- Unbabel/TowerInstruct-7B-v0.1
 
 ``` 
 python translation2.py --model davidkim205/iris-7b
 ```
 
 ### translate(Bleu)
-
 원문을 번역하여 실제 번역과 비교한 결과를 `results_bleu/`에 저장합니다.
-
-**executable model**
-
-- iris_7b
-- gugugo
-- madlad400
-- mbart50
-- nllb200
-- TowerInstruct
-- synatra
 
 ```
 python translation.py --model iris_7b
 ```
 
 ### translate_self(SBleu)
-
 번역문을 다시 번역하여 원문과 비교한 결과를 `results_self/`에 저장합니다.
-
-**executable model**
-
-- iris_7b
-- gugugo
-- madlad400
-- mbart50
-- nllb200
-- TowerInstruct
-- synatra
 
 ```
 python translation_self.py --model iris_7b
@@ -160,7 +130,7 @@ duplicate와 length exceeds(out of range)는 results_bleu의 지표입니다.
 
 ### BLEU by source
 
-분야별로 테스트 데이터셋 번역 품질을 평가한 결과입니다. 저희 모델의 평가는 아래와 같습니다.
+분야별로 테스트 데이터셋 번역 품질을 평가한 결과입니다. iris-7b 모델의 평가는 아래와 같습니다.
 
 - 모든 분야에서 기존 번역모델을 압도하는 성능
 - 많은 분야에서 클라우드 번역과 비슷하거나, 더 나은 성능
