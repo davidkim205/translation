@@ -122,7 +122,7 @@ duplicate와 length exceeds(out of range)는 results_bleu의 지표입니다.
 | Cloud       | papago                              | 0.40 | 0.49  | 0         | 3              |
 | Cloud       | azure                               | 0.40 | 0.49  | 0         | 3              |
 | Cloud       | google                              | 0.40 | 0.49  | 0         | 2              |
-| HuggingFace | davidkim205/iris-7b(**ours**)       | 0.40 | 0.43  | 0         | 3              |
+| HuggingFace | davidkim205/iris-7b (**ours**)      | 0.40 | 0.43  | 0         | 3              |
 
 * SBLEU: Self-evaluation BLEU
 
@@ -147,7 +147,7 @@ duplicate와 length exceeds(out of range)는 results_bleu의 지표입니다.
 | Cloud       | papago                              | 0.40    | 0.61 |     0.40 |      0.32 |       0.32 |                          0.59 |          0.45 |      0.45 |                    0.14 |                 0.38 | 0.59 |    0.43 |     0.34 |                                 0.45 |      0.22 |     0.28 |              0.47 |   0.39 |       0.36 |
 | Cloud       | azure                               | 0.40    | 0.57 |     0.36 |      0.35 |       0.29 |                          0.63 |          0.46 |      0.39 |                    0.16 |                 0.38 | 0.56 |    0.39 |     0.33 |                                 0.54 |      0.22 |     0.29 |              0.52 |   0.35 |       0.41 |
 | Cloud       | google                              | 0.40    | 0.62 |     0.39 |      0.32 |       0.32 |                          0.60 |          0.45 |      0.45 |                    0.14 |                 0.38 | 0.59 |    0.43 |     0.34 |                                 0.45 |      0.22 |     0.28 |              0.47 |   0.39 |       0.36 |
-| HuggingFace | davidkim205/iris-7b(**ours**)       | 0.40    | 0.49 |     0.37 |      0.34 |       0.31 |                          0.72 |          0.48 |      0.43 |                    0.11 |                 0.33 | 0.56 |    0.46 |     0.34 |                                 0.43 |      0.20 |     0.30 |              0.47 |   0.41 |       0.40 |
+| HuggingFace | davidkim205/iris-7b (**ours**)      | 0.40    | 0.49 |     0.37 |      0.34 |       0.31 |                          0.72 |          0.48 |      0.43 |                    0.11 |                 0.33 | 0.56 |    0.46 |     0.34 |                                 0.43 |      0.20 |     0.30 |              0.47 |   0.41 |       0.40 |
 
 ![plot-bleu-by-src.png](assets%2Fplot-bleu-by-src.png)
 
@@ -173,7 +173,7 @@ duplicate와 length exceeds(out of range)는 results_bleu의 지표입니다.
 | Cloud       | papago                              | 0.51    |     0.50 |     0.49 |      0.54 |      0.50 |
 | Cloud       | azure                               | 0.47    |     0.46 |     0.47 |      0.52 |      0.44 |
 | Cloud       | google                              | 0.51    |     0.50 |     0.49 |      0.54 |      0.51 |
-| HuggingFace | davidkim205/iris-7b(**ours**)       | 0.56    |     0.51 |     0.58 |      0.62 |      0.54 |
+| HuggingFace | davidkim205/iris-7b (**ours**)      | 0.56    |     0.51 |     0.58 |      0.62 |      0.54 |
 
 ## test dataset info
 
