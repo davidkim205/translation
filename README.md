@@ -121,16 +121,16 @@ result_self-iris_7b.jsonl: 0.43, out_of_range_count=1, duplicate=0
 
 ### BLEU by sentence length
 
-| Type        | Model                            | Average | ~100(111) | ~500(61) | ~1000(6) | ~1500(2) |
-| ----------- | :------------------------------- | ------- | --------: | -------: | -------: | -------: |
-| HuggingFace | facebook/nllb-200-distilled-1.3B | 0.26    |      0.28 |     0.25 |     0.16 |     0.06 |
-| HuggingFace | jbochi/madlad400-10b-mt          | 0.29    |      0.32 |     0.27 |     0.09 |     0.01 |
-| HuggingFace | Unbabel/TowerInstruct-7B-v0.1    | 0.32    |      0.33 |     0.31 |     0.21 |     0.19 |
-| HuggingFace | squarelike/Gugugo-koen-7B-V1.1   | 0.32    |      0.33 |      0.3 |     0.31 |     0.21 |
-| Cloud       | deepl                            | 0.39    |      0.39 |      0.4 |     0.43 |     0.39 |
-| Cloud       | azure                            | 0.40    |      0.41 |     0.39 |     0.36 |     0.33 |
-| Cloud       | google                           | 0.40    |       0.4 |      0.4 |     0.43 |      0.4 |
-| HuggingFace | davidkim205/iris-7b(**ours**)    | 0.40    |      0.39 |     0.41 |     0.54 |     0.34 |
+| Type        | Model                            | Average | ~100(50) | ~500(50) | ~1000(50) | ~1500(50) |
+| ----------- | :------------------------------- | ------- | -------: | -------: | --------: | --------: |
+| HuggingFace | facebook/nllb-200-distilled-1.3B | 0.24    |     0.31 |     0.31 |      0.22 |      0.13 |
+| HuggingFace | jbochi/madlad400-10b-mt          | 0.22    |     0.35 |     0.37 |      0.08 |      0.10 |
+| HuggingFace | Unbabel/TowerInstruct-7B-v0.1    | 0.32    |     0.41 |     0.31 |      0.24 |      0.32 |
+| HuggingFace | squarelike/Gugugo-koen-7B-V1.1   | 0.45    |     0.37 |     0.48 |      0.52 |      0.43 |
+| Cloud       | deepl                            | 0.53    |     0.44 |     0.56 |      0.64 |      0.50 |
+| Cloud       | azure                            | 0.47    |     0.46 |     0.47 |      0.52 |      0.44 |
+| Cloud       | google                           | 0.51    |     0.50 |     0.49 |      0.54 |      0.51 |
+| HuggingFace | davidkim205/iris-7b(**ours**)    | 0.56    |     0.51 |     0.58 |      0.62 |      0.54 |
 
 ## test dataset info
 | src                                        | ratio | length |
