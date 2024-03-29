@@ -189,10 +189,11 @@ text: Do you have a fever?
 translation: 뭐라고 했어?
 ```
 
-`korean-parallel-corpora` 데이터셋은 번역문에 한영이 혼영되거나, 전혀 다르게 번역되어 품질이 낮습니다.
+`korean-parallel-corpora` 데이터셋은 번역문에 한영이 혼용되거나, 전혀 다르게 번역되어 품질이 낮습니다.
 
 ```
-text: S. Korea mulls missile defense system 한국, 자체적 미사일 방어체계 수립 검토     2007.03 translation: South Korea maintains a mandatory draft system under which all able-bodied men over 20 must serve in the military for 24 to 27 months.
+text: S. Korea mulls missile defense system 한국, 자체적 미사일 방어체계 수립 검토     2007.03
+translation: South Korea maintains a mandatory draft system under which all able-bodied men over 20 must serve in the military for 24 to 27 months.
 
 text: A United States intelligence agency has been collecting data on the phone calls of tens of millions of Americans, a report in USA Today has alleged.
 translation: NSA collects Americans’phone clall data미 국가안보국, 미국민 통화 내용 수집2006.07
