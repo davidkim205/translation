@@ -66,9 +66,9 @@ result_bleu-TowerInstruct.jsonl: 0.32, out_of_range_count=9, duplicate=1
 result_bleu-gugugo.jsonl: 0.32, out_of_range_count=3, duplicate=1
 result_bleu-Synatra-7B-v0.3-Translation.jsonl: 0.35, out_of_range_count=2, duplicate=1
 result_bleu-deepl.jsonl: 0.39, out_of_range_count=1, duplicate=0
-result_bleu-papago.jsonl: 0.40, out_of_range_count=3, duplicate=0
 result_bleu-azure.jsonl: 0.40, out_of_range_count=2, duplicate=0
 result_bleu-google.jsonl: 0.40, out_of_range_count=3, duplicate=0
+result_bleu-papago.jsonl: 0.43, out_of_range_count=3, duplicate=0
 result_bleu-iris_7b.jsonl: 0.40, out_of_range_count=3, duplicate=0
 ```
 
@@ -91,6 +91,7 @@ result_self-deepl.jsonl: 0.45, out_of_range_count=0, duplicate=0
 result_self-papago.jsonl: 0.49, out_of_range_count=0, duplicate=0
 result_self-azure.jsonl: 0.49, out_of_range_count=0, duplicate=1
 result_self-google.jsonl: 0.49, out_of_range_count=0, duplicate=0
+result_self-papago.jsonl: 0.51, out_of_range_count=0, duplicate=0
 result_self-iris_7b.jsonl: 0.43, out_of_range_count=1, duplicate=0
 ```
 
@@ -103,13 +104,12 @@ result_self-iris_7b.jsonl: 0.43, out_of_range_count=1, duplicate=0
 
 ### BLEU
 
-각 모델별로 평가한 결과입니다.
-
-duplicate와 length exceeds(out of range)는 results_bleu의 지표입니다.
+각 모델별로 평가한 결과입니다. iris-7b 모델의 평가는 아래와 같습니다.
 
 - 모든 평가에서 기존 모델들보다 높은 성능
-
 - 평균적으로 클라우드 번역과 동일한 성능
+
+duplicate와 length exceeds(out of range)는 results_bleu의 지표입니다.
 
 | TYPE        | Model                               | BLEU | SBLEU | Duplicate | Length Exceeds |
 | ----------- | :---------------------------------- | ---- | ----- | --------- | -------------- |
@@ -119,9 +119,9 @@ duplicate와 length exceeds(out of range)는 results_bleu의 지표입니다.
 | HuggingFace | squarelike/Gugugo-koen-7B-V1.1      | 0.32 | 0.36  | 1         | 3              |
 | HuggingFace | maywell/Synatra-7B-v0.3-Translation | 0.35 | 0.41  | 1         | 2              |
 | Cloud       | deepl                               | 0.39 | 0.45  | 0         | 1              |
-| Cloud       | papago                              | 0.40 | 0.49  | 0         | 3              |
 | Cloud       | azure                               | 0.40 | 0.49  | 0         | 3              |
 | Cloud       | google                              | 0.40 | 0.49  | 0         | 2              |
+| Cloud       | papago                              | 0.43 | 0.51  | 0         | 3              |
 | HuggingFace | davidkim205/iris-7b (**ours**)      | 0.40 | 0.43  | 0         | 3              |
 
 * SBLEU: Self-evaluation BLEU
@@ -144,9 +144,9 @@ duplicate와 length exceeds(out of range)는 results_bleu의 지표입니다.
 | HuggingFace | squarelike/Gugugo-koen-7B-V1.1      | 0.32    | 0.46 |     0.27 |      0.28 |       0.22 |                          0.66 |          0.33 |      0.36 |                    0.10 |                 0.29 | 0.45 |    0.34 |     0.24 |                                 0.42 |      0.22 |     0.23 |              0.42 |   0.20 |       0.26 |
 | HuggingFace | maywell/Synatra-7B-v0.3-Translation | 0.35    | 0.43 |     0.36 |      0.27 |       0.23 |                          0.70 |          0.37 |      0.31 |                    0.13 |                 0.34 | 0.52 |    0.35 |     0.29 |                                 0.44 |      0.21 |     0.24 |              0.46 |   0.28 |       0.37 |
 | Cloud       | deepl                               | 0.39    | 0.59 |     0.33 |      0.31 |       0.32 |                          0.70 |          0.48 |      0.38 |                    0.14 |                 0.38 | 0.55 |    0.41 |     0.33 |                                 0.48 |      0.24 |     0.28 |              0.42 |   0.37 |       0.36 |
-| Cloud       | papago                              | 0.40    | 0.61 |     0.40 |      0.32 |       0.32 |                          0.59 |          0.45 |      0.45 |                    0.14 |                 0.38 | 0.59 |    0.43 |     0.34 |                                 0.45 |      0.22 |     0.28 |              0.47 |   0.39 |       0.36 |
 | Cloud       | azure                               | 0.40    | 0.57 |     0.36 |      0.35 |       0.29 |                          0.63 |          0.46 |      0.39 |                    0.16 |                 0.38 | 0.56 |    0.39 |     0.33 |                                 0.54 |      0.22 |     0.29 |              0.52 |   0.35 |       0.41 |
 | Cloud       | google                              | 0.40    | 0.62 |     0.39 |      0.32 |       0.32 |                          0.60 |          0.45 |      0.45 |                    0.14 |                 0.38 | 0.59 |    0.43 |     0.34 |                                 0.45 |      0.22 |     0.28 |              0.47 |   0.39 |       0.36 |
+| Cloud       | papago                              | 0.43    | 0.56 |     0.43 |      0.41 |       0.30 |                          0.55 |          0.58 |      0.56 |                    0.16 |                 0.37 | 0.67 |    0.52 |     0.35 |                                 0.53 |      0.21 |     0.35 |              0.45 |   0.37 |       0.46 |
 | HuggingFace | davidkim205/iris-7b (**ours**)      | 0.40    | 0.49 |     0.37 |      0.34 |       0.31 |                          0.72 |          0.48 |      0.43 |                    0.11 |                 0.33 | 0.56 |    0.46 |     0.34 |                                 0.43 |      0.20 |     0.30 |              0.47 |   0.41 |       0.40 |
 
 ![plot-bleu-by-src.png](assets%2Fplot-bleu-by-src.png)
@@ -170,9 +170,9 @@ duplicate와 length exceeds(out of range)는 results_bleu의 지표입니다.
 | HuggingFace | squarelike/Gugugo-koen-7B-V1.1      | 0.45    |     0.37 |     0.48 |      0.52 |      0.43 |
 | HuggingFace | maywell/Synatra-7B-v0.3-Translation | 0.50    |     0.41 |     0.57 |      0.57 |      0.51 |
 | Cloud       | deepl                               | 0.53    |     0.44 |     0.56 |      0.64 |      0.50 |
-| Cloud       | papago                              | 0.51    |     0.50 |     0.49 |      0.54 |      0.50 |
 | Cloud       | azure                               | 0.47    |     0.46 |     0.47 |      0.52 |      0.44 |
 | Cloud       | google                              | 0.51    |     0.50 |     0.49 |      0.54 |      0.51 |
+| Cloud       | papago                              | 0.46    |     0.50 |     0.46 |      0.43 |      0.45 |
 | HuggingFace | davidkim205/iris-7b (**ours**)      | 0.56    |     0.51 |     0.58 |      0.62 |      0.54 |
 
 ## test dataset info
@@ -189,10 +189,11 @@ text: Do you have a fever?
 translation: 뭐라고 했어?
 ```
 
-`korean-parallel-corpora` 데이터셋은 번역문에 한영이 혼영되거나, 전혀 다르게 번역되어 품질이 낮습니다.
+`korean-parallel-corpora` 데이터셋은 번역문에 한영이 혼용되거나, 전혀 다르게 번역되어 품질이 낮습니다.
 
 ```
-text: S. Korea mulls missile defense system 한국, 자체적 미사일 방어체계 수립 검토     2007.03 translation: South Korea maintains a mandatory draft system under which all able-bodied men over 20 must serve in the military for 24 to 27 months.
+text: S. Korea mulls missile defense system 한국, 자체적 미사일 방어체계 수립 검토     2007.03
+translation: South Korea maintains a mandatory draft system under which all able-bodied men over 20 must serve in the military for 24 to 27 months.
 
 text: A United States intelligence agency has been collecting data on the phone calls of tens of millions of Americans, a report in USA Today has alleged.
 translation: NSA collects Americans’phone clall data미 국가안보국, 미국민 통화 내용 수집2006.07
