@@ -3,6 +3,8 @@
 
 Welcome to Iris Translation, a project designed to evaluate Korean-to-English translation models. Our project provides a comprehensive framework for evaluating the Iris model that we have developed.
 
+
+
 ## Models
 
 번역 품질을 비교하기 위해 사용한 모델입니다. 모두 실행 가능하며 결과를 확인할 수 있습니다.
@@ -15,6 +17,8 @@ Welcome to Iris Translation, a project designed to evaluate Korean-to-English tr
 - [facebook/mbart-large-50-many-to-many-mmt](https://huggingface.co/facebook/mbart-large-50-many-to-many-mmt)
 - [facebook/nllb-200-distilled-1.3B](https://huggingface.co/facebook/nllb-200-distilled-1.3B)
 
+
+
 ## Installation
 
 ``` 
@@ -23,6 +27,8 @@ conda activate translation
 
 pip install -r requirements.txt
 ```
+
+
 ## Usage
 
 입력으로 주어지는 기본 파일은 `./data/komt-1810k-test.jsonl`입니다. 다음은 데이터의 JSON 스키마 예시입니다.
@@ -41,9 +47,6 @@ pip install -r requirements.txt
     ],
     "src":"aihub-MTPE"
 }
-.
-.
-.
 ```
 
 ### translate(Bleu)
@@ -51,7 +54,7 @@ pip install -r requirements.txt
 모델을 사용한 번역 결과와 실제 번역 결과를 비교하여 bleu score를 구합니다. 
 
 ```
-python translation.py --model iris-7b
+python translation.py --model davidkim205/iris-7b
 ```
 
 결과 파일의 경로는 `results_bleu/iris-7b-result.jsonl`입니다.
@@ -88,7 +91,7 @@ JSON 스키마 예시
 모델 번역 결과를 다시 번역하여 원문과의 bleu score를 비교합니다.
 
 ```
-python translation_self.py --model iris_7b
+python translation_self.py --model davidkim205/iris-7b
 ```
 
 결과 파일의 경로는 `results_self/iris-7b-result.jsonl`입니다.
@@ -133,6 +136,8 @@ python translation2.py --model davidkim205/iris-7b
 - translate_self를 수행하여 `results_self/iris-7b-result.jsonl`에 저장
 
 각 파일은 위에서 생성한 두 파일과 동일한 결과를 갖습니다.
+
+
 
 ## Evaluation
 
@@ -194,12 +199,13 @@ result_self-iris_7b.jsonl: 0.43, out_of_range_count=1, duplicate=0
 
 각 모델별로 평가한 결과입니다. iris-7b 모델의 평가는 아래와 같습니다.
 
-- 모든 평가에서 기존 모델들보다 높은 성능
-- 평균적으로 클라우드 번역과 동일한 성능
+- 모든 평가에서 기존 모델들보다 높은 번역 성능
+- 평균적으로 클라우드 번역과 동일한 번역 성능
+- 중복 문장 생성 및 길이 초과 문제는 클라우드 번역과 동일한 수준
 
 ![plot-bleu.png](assets%2Fplot-bleu.png)
 
-duplicate와 length exceeds(out of range)는 results_bleu의 지표입니다.
+Duplicate(중복 문장 생성)와 Length Exceeds(길이 초과)는 translation(bleu)의 지표입니다.
 
 | TYPE        | Model                               | BLEU | SBLEU | Duplicate | Length Exceeds |
 | ----------- | :---------------------------------- | ---- | ----- | --------- | -------------- |
@@ -216,15 +222,13 @@ duplicate와 length exceeds(out of range)는 results_bleu의 지표입니다.
 
 * SBLEU: Self-evaluation BLEU
 
-
-
 ### BLEU by source
 
 분야별로 테스트 데이터셋 번역 품질을 평가한 결과입니다. iris-7b 모델의 평가는 아래와 같습니다.
 
 - 모든 분야에서 기존 번역모델을 압도하는 성능
 - 많은 분야에서 클라우드 번역과 비슷하거나, 더 나은 성능
-- 과학 분야, 신조어 분야의 번역 품질이 매우 우수함
+- 과학 분야, 신조어 분야의 번역 품질이 매우 우수
 
 ![plot-bleu-by-src.png](assets%2Fplot-bleu-by-src.png)
 
@@ -243,9 +247,16 @@ duplicate와 length exceeds(out of range)는 results_bleu의 지표입니다.
 
 ### BLEU by sentence length
 
-텍스트의 길이에 따라 4구간으로 데이터를 50개씩 샘플링하여 번역한 평균 점수입니다.
+텍스트의 길이에 따라 4구간으로 데이터를 50개씩 샘플링하여 번역한 평균 점수입니다. 평가에 사용된 데이터셋은 다음과 같습니다.
 
-놀랍게도, 저희 모델은 모든 구간에서 대부분의 클라우드 번역보다 높은 성능을 보입니다.
+- `data/komt-dataset-100.jsonl`
+- `data/komt-dataset-500.jsonl`
+- `data/komt-dataset-1000.jsonl`
+- `data/komt-dataset-1500.jsonl`
+
+번역 및 bleu score 결과는 `results_length/`아래에 저장되어 있습니다.
+
+놀랍게도, iris-7b 모델은 모든 구간에서 대부분의 클라우드 번역보다 높은 성능을 보입니다.
 
 - ~100: (0, 100]
 - ~500: (100, 500]
@@ -266,6 +277,8 @@ duplicate와 length exceeds(out of range)는 results_bleu의 지표입니다.
 | Cloud       | google                              | 0.51    |     0.50 |     0.49 |      0.54 |      0.51 |
 | Cloud       | papago                              | 0.46    |     0.50 |     0.46 |      0.43 |      0.45 |
 | HuggingFace | davidkim205/iris-7b (**ours**)      | 0.56    |     0.51 |     0.58 |      0.62 |      0.54 |
+
+
 
 ## test dataset info
 
