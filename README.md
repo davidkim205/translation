@@ -252,6 +252,8 @@ duplicate와 length exceeds(out of range)는 results_bleu의 지표입니다.
 - ~1000: (500, 1000]
 - ~1500: (1000, 1500]
 
+![plot-bleu-by-sentence-length.png](assets%2Fplot-bleu-by-sentence-length.png)
+
 | Type        | Model                               | Average | ~100(50) | ~500(50) | ~1000(50) | ~1500(50) |
 | ----------- | :---------------------------------- | ------- | -------: | -------: | --------: | --------: |
 | HuggingFace | facebook/nllb-200-distilled-1.3B    | 0.24    |     0.31 |     0.31 |      0.22 |      0.13 |
@@ -264,8 +266,6 @@ duplicate와 length exceeds(out of range)는 results_bleu의 지표입니다.
 | Cloud       | google                              | 0.51    |     0.50 |     0.49 |      0.54 |      0.51 |
 | Cloud       | papago                              | 0.46    |     0.50 |     0.46 |      0.43 |      0.45 |
 | HuggingFace | davidkim205/iris-7b (**ours**)      | 0.56    |     0.51 |     0.58 |      0.62 |      0.54 |
-
-![plot-bleu-by-sentence-length.png](assets%2Fplot-bleu-by-sentence-length.png)
 
 ## test dataset info
 
