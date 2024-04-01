@@ -47,8 +47,6 @@ pip install -r requirements.txt
     ],
     "src":"aihub-MTPE"
 }
-.
-.
 ```
 
 ### translate(Bleu)
@@ -86,8 +84,6 @@ JSON 스키마 예시
         }
     ]
 }
-.
-.
 ```
 
 ### translate_self(SBleu)
@@ -127,8 +123,6 @@ JSON 스키마 예시
         }
     ]
 }
-.
-.
 ```
 
 ### translate2(Bleu and SBleu)
