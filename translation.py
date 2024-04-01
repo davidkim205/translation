@@ -30,6 +30,7 @@ def save_json(json_data, filename, option="a"):
                 json.dump(data, f, ensure_ascii=False)
                 f.write("\n")
 
+
 def main():
     parser = argparse.ArgumentParser("argument")
     parser.add_argument(
@@ -49,19 +50,19 @@ def main():
     args = parser.parse_args()
     json_data = load_json(args.input_file)
 
-    if args.model == "gugugo":
+    if args.model == "squarelike/Gugugo-koen-7B-V1.1":
         from models.gugugo import translate_en2ko, translate_ko2en
-    elif args.model == "madlad400":
+    elif args.model == "jbochi/madlad400-10b-mt":
         from models.madlad400 import translate_ko2en, translate_en2ko
-    elif args.model == "mbart50":
+    elif args.model == "facebook/mbart-large-50-many-to-many-mmt":
         from models.mbart50 import translate_en2ko, translate_ko2en
-    elif args.model == "nllb200":
+    elif args.model == "facebook/nllb-200-distilled-1.3B":
         from models.nllb200 import translate_ko2en, translate_en2ko
-    elif args.model == "TowerInstruct":
+    elif args.model == "Unbabel/TowerInstruct-7B-v0.1":
         from models.TowerInstruct import translate_ko2en, translate_en2ko
-    elif args.model == "synatra":
+    elif args.model == "maywell/Synatra-7B-v0.3-Translation":
         from models.synatra import translate_ko2en, translate_en2ko
-    elif args.model == "iris_7b":
+    elif args.model == "davidkim205/iris-7b":
         from models.iris_7b import translate_ko2en, translate_en2ko
         if args.model_path:
             from models.iris_7b import load_model
@@ -111,10 +112,12 @@ def main():
             output = args.output
         else:
             if args.model_path:
-                filename = args.model_path.split('/')[-1]
+                filename = args.model.split("/")[-1]
+                model_num = args.model_path.split("/")[-1]
+                output = f"results_bleu/{filename}-{model_num}-result.jsonl"
             else:
-                filename = args.model
-            output = f"results/result-{args.model}-{filename}.jsonl"
+                filename = args.model.split("/")[-1]
+                output = f"results_bleu/{filename}-result.jsonl"
         save_json([result], output)
 
 

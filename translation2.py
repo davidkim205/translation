@@ -30,6 +30,7 @@ def save_json(json_data, filename, option="a"):
                 json.dump(data, f, ensure_ascii=False)
                 f.write("\n")
                 
+
 def task_bleu(data):
     chat = data["conversations"]
     input = chat[0]["value"]
@@ -66,6 +67,7 @@ def task_bleu(data):
     }
     return result
 
+
 def task_self_bleu(data):
     chat = data["conversations"]
     src = data["src"]
@@ -74,7 +76,6 @@ def task_self_bleu(data):
     def clean_text(text):
         if chat[0]["value"].find("한글로 번역하세요.") != -1:
             cur_lang = "en"
-        
         else:
             cur_lang = "ko"
         text = text.split("번역하세요.\n", 1)[-1]
@@ -104,6 +105,8 @@ def task_self_bleu(data):
         "lang": cur_lang,
     }
     return result
+
+
 def main():
     parser = argparse.ArgumentParser("argument")
     parser.add_argument(
@@ -137,7 +140,7 @@ def main():
         result['conversations'] = data["conversations"]
 
         print(json.dumps(result, ensure_ascii=False, indent=2))
-        save_json([result], make_output(args, 'bleu2'))
+        save_json([result], make_output(args, 'bleu'))
 
     # task self bleu 
     print('task self bleu')
@@ -150,7 +153,7 @@ def main():
         result['conversations'] = data["conversations"]
 
         print(json.dumps(result, ensure_ascii=False, indent=2))
-        save_json([result], make_output(args, 'self2'))
+        save_json([result], make_output(args, 'self'))
 
 
 if __name__ == "__main__":

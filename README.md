@@ -25,26 +25,114 @@ pip install -r requirements.txt
 ```
 ## Usage
 
+입력으로 주어지는 기본 파일은 `./data/komt-1810k-test.jsonl`입니다. 다음은 데이터의 JSON 스키마 예시입니다.
+
+```json
+{
+    "conversations":[
+        {
+            "from":"human",
+            "value":"다음 문장을 한글로 번역하세요.\nLet's make a graph here showing different levels of interest in activities."
+        },
+        {
+            "from":"gpt",
+            "value":"활동에 대한 다양한 수준의 관심을 보여주는 그래프를 만들어 보겠습니다."
+        }
+    ],
+    "src":"aihub-MTPE"
+}
+.
+.
+.
+```
+
+### translate(Bleu)
+
+모델을 사용한 번역 결과와 실제 번역 결과를 비교하여 bleu score를 구합니다. 
+
+```
+python translation.py --model iris-7b
+```
+
+결과 파일의 경로는 `results_bleu/iris-7b-result.jsonl`입니다.
+
+JSON 스키마 예시
+
+- reference: 실제 정답 번역문
+- generation: 모델이 생성한 번역문
+
+```json
+{
+    "index":0,
+    "reference":"활동에 대한 다양한 수준의 관심을 보여주는 그래프를 만들어 보겠습니다.",
+    "generation":"여기서 활동에 대한 다양한 수준의 관심을 보여주는 그래프를 만들어 보겠습니다.",
+    "bleu":0.917,
+    "lang":"en",
+    "model":"davidkim205/iris-7b",
+    "src":"aihub-MTPE",
+    "conversations":[
+        {
+            "from":"human",
+            "value":"다음 문장을 한글로 번역하세요.\nLet's make a graph here showing different levels of interest in activities."
+        },
+        {
+            "from":"gpt",
+            "value":"활동에 대한 다양한 수준의 관심을 보여주는 그래프를 만들어 보겠습니다."
+        }
+    ]
+}
+```
+
+### translate_self(SBleu)
+
+모델 번역 결과를 다시 번역하여 원문과의 bleu score를 비교합니다.
+
+```
+python translation_self.py --model iris_7b
+```
+
+결과 파일의 경로는 `results_self/iris-7b-result.jsonl`입니다.
+
+JSON 스키마 예시
+
+- reference: 원문
+- generation: 모델 재번역 결과
+- generation1: 모델 번역문
+
+```json
+{
+    "index":0,
+    "reference":"Let's make a graph here showing different levels of interest in activities.",
+    "generation":"let's create a graph that shows different levels of interest in activities here",
+    "generation1":"여기서 활동에 대한 다양한 수준의 관심을 보여주는 그래프를 만들어 보겠습니다.",
+    "bleu":0.49,
+    "lang":"en",
+    "model":"davidkim205/iris-7b",
+    "src":"aihub-MTPE",
+    "conversations":[
+        {
+            "from":"human",
+            "value":"다음 문장을 한글로 번역하세요.\nLet's make a graph here showing different levels of interest in activities."
+        },
+        {
+            "from":"gpt",
+            "value":"활동에 대한 다양한 수준의 관심을 보여주는 그래프를 만들어 보겠습니다."
+        }
+    ]
+}
+```
+
 ### translate2(Bleu and SBleu)
-translate와 translate_self를 모두 수행합니다.
+translate와 translate_self를 모두 수행하여 bleu 및 sbleu를 모두 비교할 수 있습니다.
 
 ``` 
 python translation2.py --model davidkim205/iris-7b
 ```
 
-### translate(Bleu)
-원문을 번역하여 실제 번역과 비교한 결과를 `results_bleu/`에 저장합니다.
+- translate를 수행하여 `results_bleu/iris-7b-result.jsonl`에 저장
+- translate_self를 수행하여 `results_self/iris-7b-result.jsonl`에 저장
 
-```
-python translation.py --model iris_7b
-```
-
-### translate_self(SBleu)
-번역문을 다시 번역하여 원문과 비교한 결과를 `results_self/`에 저장합니다.
-
-```
-python translation_self.py --model iris_7b
-```
+각 파일은 위에서 생성한 두 파일과 동일한 결과를 갖습니다.
 
 ## Evaluation
 
@@ -109,6 +197,8 @@ result_self-iris_7b.jsonl: 0.43, out_of_range_count=1, duplicate=0
 - 모든 평가에서 기존 모델들보다 높은 성능
 - 평균적으로 클라우드 번역과 동일한 성능
 
+![plot-bleu.png](assets%2Fplot-bleu.png)
+
 duplicate와 length exceeds(out of range)는 results_bleu의 지표입니다.
 
 | TYPE        | Model                               | BLEU | SBLEU | Duplicate | Length Exceeds |
@@ -126,7 +216,7 @@ duplicate와 length exceeds(out of range)는 results_bleu의 지표입니다.
 
 * SBLEU: Self-evaluation BLEU
 
-![plot-bleu.png](assets%2Fplot-bleu.png)
+
 
 ### BLEU by source
 
@@ -135,6 +225,8 @@ duplicate와 length exceeds(out of range)는 results_bleu의 지표입니다.
 - 모든 분야에서 기존 번역모델을 압도하는 성능
 - 많은 분야에서 클라우드 번역과 비슷하거나, 더 나은 성능
 - 과학 분야, 신조어 분야의 번역 품질이 매우 우수함
+
+![plot-bleu-by-src.png](assets%2Fplot-bleu-by-src.png)
 
 | Type        | Model                               | Average | MTPE | techsci2 | expertise | humanities | sharegpt-deepl-ko-translation | MT-new-corpus | socialsci | korean-parallel-corpora | parallel-translation | food | techsci | para_pat | speechtype-based-machine-translation | koopus100 | basicsci | broadcast-content | patent | colloquial |
 | ----------- | :---------------------------------- | ------- | ---: | -------: | --------: | ---------: | ----------------------------: | ------------: | --------: | ----------------------: | -------------------: | ---: | ------: | -------: | -----------------------------------: | --------: | -------: | ----------------: | -----: | ---------: |
@@ -149,8 +241,6 @@ duplicate와 length exceeds(out of range)는 results_bleu의 지표입니다.
 | Cloud       | papago                              | 0.43    | 0.56 |     0.43 |      0.41 |       0.30 |                          0.55 |          0.58 |      0.56 |                    0.16 |                 0.37 | 0.67 |    0.52 |     0.35 |                                 0.53 |      0.21 |     0.35 |              0.45 |   0.37 |       0.46 |
 | HuggingFace | davidkim205/iris-7b (**ours**)      | 0.40    | 0.49 |     0.37 |      0.34 |       0.31 |                          0.72 |          0.48 |      0.43 |                    0.11 |                 0.33 | 0.56 |    0.46 |     0.34 |                                 0.43 |      0.20 |     0.30 |              0.47 |   0.41 |       0.40 |
 
-![plot-bleu-by-src.png](assets%2Fplot-bleu-by-src.png)
-
 ### BLEU by sentence length
 
 텍스트의 길이에 따라 4구간으로 데이터를 50개씩 샘플링하여 번역한 평균 점수입니다.
@@ -161,6 +251,8 @@ duplicate와 length exceeds(out of range)는 results_bleu의 지표입니다.
 - ~500: (100, 500]
 - ~1000: (500, 1000]
 - ~1500: (1000, 1500]
+
+![plot-bleu-by-sentence-length.png](assets%2Fplot-bleu-by-sentence-length.png)
 
 | Type        | Model                               | Average | ~100(50) | ~500(50) | ~1000(50) | ~1500(50) |
 | ----------- | :---------------------------------- | ------- | -------: | -------: | --------: | --------: |
@@ -174,8 +266,6 @@ duplicate와 length exceeds(out of range)는 results_bleu의 지표입니다.
 | Cloud       | google                              | 0.51    |     0.50 |     0.49 |      0.54 |      0.51 |
 | Cloud       | papago                              | 0.46    |     0.50 |     0.46 |      0.43 |      0.45 |
 | HuggingFace | davidkim205/iris-7b (**ours**)      | 0.56    |     0.51 |     0.58 |      0.62 |      0.54 |
-
-![plot-bleu-by-sentence-length.png](assets%2Fplot-bleu-by-sentence-length.png)
 
 ## test dataset info
 
@@ -191,7 +281,7 @@ text: Do you have a fever?
 translation: 뭐라고 했어?
 ```
 
-`korean-parallel-corpora` 데이터셋은 번역문에 한영이 혼용되거나, 전혀 다르게 번역되어 품질이 낮습니다.
+`korean-parallel-corpora` 데이터셋은 번역문에 한영이 혼용되거나, 잘못 번역되어 품질이 낮습니다.
 
 ```
 text: S. Korea mulls missile defense system 한국, 자체적 미사일 방어체계 수립 검토     2007.03
