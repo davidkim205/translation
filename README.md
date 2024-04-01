@@ -265,6 +265,8 @@ duplicate와 length exceeds(out of range)는 results_bleu의 지표입니다.
 | Cloud       | papago                              | 0.46    |     0.50 |     0.46 |      0.43 |      0.45 |
 | HuggingFace | davidkim205/iris-7b (**ours**)      | 0.56    |     0.51 |     0.58 |      0.62 |      0.54 |
 
+![plot-bleu-by-sentence-length.png](assets%2Fplot-bleu-by-sentence-length.png)
+
 ## test dataset info
 
 테스트 데이터셋은 18가지 분야의 데이터 10개로, 총 180개로 이루어져 있습니다.
