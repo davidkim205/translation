@@ -47,6 +47,15 @@ def is_duplicated(text, top_k=10, min_word_len=0):
 
     return False
 
+def is_length_exceed(reference, generation, min_ratio=0.2, max_ratio=2):
+    return not min_ratio <= (len(generation) / len(reference)) <= max_ratio
+
+def get_average(a):
+    if isinstance(a, list):
+        return round(sum(a) / len(a), 2)
+    return a
+
+
 def main():
     parser = argparse.ArgumentParser("argument")
     parser.add_argument(
