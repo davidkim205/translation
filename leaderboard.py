@@ -1,17 +1,18 @@
 import gradio as gr
 import pandas as pd
-from create_table import create
 
-# 테이블 동적 생성
-bleu_and_sbleu, bleu_by_src, bleu_by_length = create()
+from create_table import create
 
 
 # 테이블 업데이트
 def refresh():
-    return create()
+    table1, table2, table3 = create()
+    return table1, table2, table3
 
 
 with gr.Blocks() as demo:
+    # 테이블 초기화
+    table1, table2, table3 = create()
     with gr.Row():
         gr.Markdown(
             """
@@ -31,7 +32,7 @@ with gr.Blocks() as demo:
     with gr.Row():
         with gr.Tab("bleu and sbleu"):
             with gr.Group():
-                table1 = gr.Dataframe(value=bleu_and_sbleu, datatype="html")
+                table1 = gr.Dataframe(value=table1, datatype="html")
                 with gr.Accordion("Show Chart", open=False):
                     gr.Image(
                         "assets/plot-bleu.png",
@@ -40,7 +41,7 @@ with gr.Blocks() as demo:
                     )
         with gr.Tab("bleu by src"):
             with gr.Group():
-                table2 = gr.Dataframe(value=bleu_by_src, datatype="html")
+                table2 = gr.Dataframe(value=table2, datatype="html")
                 with gr.Accordion("Show Chart", open=False):
                     gr.Image(
                         "assets/plot-bleu-by-src.png",
@@ -49,14 +50,16 @@ with gr.Blocks() as demo:
                     )
         with gr.Tab("bleu by sentence length"):
             with gr.Group():
-                table3 = gr.Dataframe(value=bleu_by_length, datatype="html")
+                table3 = gr.Dataframe(value=table3, datatype="html")
                 with gr.Accordion("Show Chart", open=False):
                     gr.Image(
                         "assets/plot-bleu-by-sentence-length.png",
                         show_download_button=False,
                         container=False,
                     )
+
     refresh_btn = gr.Button(value="Refresh")
     refresh_btn.click(refresh, outputs=[table1, table2, table3])
+
 
 demo.launch(share=True)
