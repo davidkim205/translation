@@ -4,6 +4,24 @@ from utils.simple_bleu import simple_score
 import torch
 
 templates = {
+    'gemma': {
+        'stop_words': ['<eos>', ''],
+        'ko2en': '<bos><start_of_turn>user\n다음 문장을 영어로 번역하세요.{0}<end_of_turn>\n<start_of_turn>model:',
+        'en2ko': '<bos><start_of_turn>user\n다음 문장을 한글로 번역하세요.{0}<end_of_turn>\n<start_of_turn>model:',
+        'trim_keywords': ['<eos>', ''],
+    },
+    'openchat': {
+        'stop_words': ['<eos>', '<|end_of_turn|>'],
+        'ko2en': '<s> GPT4 Correct User: 다음 문장을 영어로 번역하세요. {0}<|end_of_turn|> GPT4 Correct Assistant:',
+        'en2ko': '<s> GPT4 Correct User: 다음 문장을 한글로 번역하세요. {0}<|end_of_turn|> GPT4 Correct Assistant:',
+        'trim_keywords': ['<eos>', '<|end_of_turn|>'],
+    },
+    'qwen': {
+        'stop_words': ['<eos>', '<|im_end|>'],
+        'ko2en': '<|im_start|>system \n You are a helpful assistant<|im_end|>\n <|im_start|>다음 문장을 영어로 번역하세요. \n {0}<|im_end|>\n<|im_start|>assistant\n',
+        'ko2en': '<|im_start|>system \n You are a helpful assistant<|im_end|>\n <|im_start|>다음 문장을 한글로 번역하세요. \n {0}<|im_end|>\n<|im_start|>assistant\n',
+        'trim_keywords': ['<eos>', '<|im_end|>'],
+    },
     'davidkim205/iris-7b': {
         'stop_words': ['</s>'],
         'ko2en': '[INST] 다음 문장을 영어로 번역하세요.{0} [/INST]',

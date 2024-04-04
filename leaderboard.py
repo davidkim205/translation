@@ -19,7 +19,11 @@ with gr.Blocks() as demo:
             # 🏆 Iris Translation Leaderboard
             Iris Translation is a project designed to evaluate Korean-to-English translation models
             
-            [GitHub](https://github.com/davidkim205/translation)
+            ## github
+            - https://github.com/davidkim205/translation
+
+            ## How to add model
+            If you want to add a new model, please write the model name and template in the [github issue](https://github.com/davidkim205/translation/issues).
 
             ## evaluation criteria
             - **Bleu**: average bleu score
@@ -61,5 +65,4 @@ with gr.Blocks() as demo:
     refresh_btn = gr.Button(value="Refresh")
     refresh_btn.click(refresh, outputs=[table1, table2, table3])
 
-
-demo.launch(share=True)
+demo.launch(server_name='0.0.0.0', share=True)
