@@ -1,9 +1,3 @@
----
-title: ko-translation-leaderbaord
-app_file: leaderboard.py
-sdk: gradio
-sdk_version: 3.50.2
----
 # Iris Translation
 ![iris-icon.jpeg](assets%2Firis-icon.jpeg)
 
