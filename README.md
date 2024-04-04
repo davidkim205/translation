@@ -3,11 +3,10 @@
 
 Welcome to Iris Translation, a project designed to evaluate Korean-to-English translation models. Our project provides a comprehensive framework for evaluating the Iris model that we have developed.
 
+## ko-translation-leaderbaord
+https://huggingface.co/spaces/davidkim205/ko-translation-leaderbaord
 
-
-## Models
-
-번역 품질을 비교하기 위해 사용한 모델입니다. 모두 실행 가능하며 결과를 확인할 수 있습니다.
+## Supported Models
 
 - [davidkim205/iris-7b](https://huggingface.co/davidkim205/iris-7b)
 - [squarelike/Gugugo-koen-7B-V1.1](https://huggingface.co/squarelike/Gugugo-koen-7B-V1.1)
@@ -16,7 +15,6 @@ Welcome to Iris Translation, a project designed to evaluate Korean-to-English tr
 - [jbochi/madlad400-10b-mt](https://huggingface.co/jbochi/madlad400-10b-mt)
 - [facebook/mbart-large-50-many-to-many-mmt](https://huggingface.co/facebook/mbart-large-50-many-to-many-mmt)
 - [facebook/nllb-200-distilled-1.3B](https://huggingface.co/facebook/nllb-200-distilled-1.3B)
-
 
 
 ## Installation
