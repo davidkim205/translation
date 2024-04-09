@@ -56,7 +56,7 @@ def main():
     parser.add_argument("--model", default="davidkim205/iris-7b", type=str, help="model")
     parser.add_argument("--template_name", default=None, type=str, help="template_name")
     args = parser.parse_args()
-    json_data = load_json(args.input_file)[:5]
+    json_data = load_json(args.input_file)
 
     load_model(args.model, args.template_name)
 
