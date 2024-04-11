@@ -1,13 +1,13 @@
 import argparse
 import json
 import os
+import importlib
 from tqdm import tqdm
 from utils.simple_bleu import simple_score
-from model import load_model, translate_en2ko, translate_ko2en
 from utils.file_handler import load_json, save_json
            
 
-def task_bleu(data):
+def task_bleu(data, translate_en2ko):
     input = data['en']
     reference = data['ko']
     generation = translate_en2ko(input)
@@ -24,8 +24,7 @@ def task_bleu(data):
     }
     return input, result
 
-
-def task_self_bleu(data):
+def task_self_bleu(data, translate_ko2en):
     reference = data['input']
     generation1 = data['generation']
     generation = translate_ko2en(generation1)
@@ -44,6 +43,15 @@ def task_self_bleu(data):
     return result
 
 
+def make_output(args, prefix):
+    if args.output:
+        output = args.output
+    else:
+        filename = args.model.split('/')[-1]
+        output = f"results_{prefix}/{filename}-domain.jsonl"
+    return output
+    
+
 def main():
     parser = argparse.ArgumentParser("argument")
     parser.add_argument(
@@ -52,28 +60,32 @@ def main():
         type=str,
         help="input_file",
     )
+    unintegrated_model = {
+        'jbochi/madlad400-10b-mt': 'models.madlad400', 
+        "facebook/nllb-200-distilled-1.3B": 'models.nllb200'
+    }
     parser.add_argument("--output", default=None, type=str, help="model path")
     parser.add_argument("--model", default="davidkim205/iris-7b", type=str, help="model")
     parser.add_argument("--template_name", default=None, type=str, help="template_name")
     args = parser.parse_args()
     json_data = load_json(args.input_file)
 
-    load_model(args.model, args.template_name)
+    if args.model in unintegrated_model:
+        module = importlib.import_module(unintegrated_model[args.model])
+        translate_en2ko = getattr(module, 'translate_en2ko')
+        translate_ko2en = getattr(module, 'translate_ko2en')
+    else:
+        from model import load_model, translate_en2ko, translate_ko2en
+        load_model(args.model, args.template_name)
 
-    def make_output(args, prefix):
-        if args.output:
-            output = args.output
-        else:
-            filename = args.model.split('/')[-1]
-            output = f"results_{prefix}/{filename}-domain.jsonl"
-        return output
+
     
     results = []
     # task bleu
     print('task bleu ')
     for index, data in tqdm(enumerate(json_data)):
 
-        input, result = task_bleu(data)
+        input, result = task_bleu(data, translate_en2ko)
         result['index'] = index
         result['model'] = args.model
 
@@ -87,7 +99,7 @@ def main():
     print('task self bleu')
     for index, data in tqdm(enumerate(results)):
         
-        result = task_self_bleu(data)
+        result = task_self_bleu(data, translate_ko2en)
         result['index'] = index
         result['model'] = args.model
 

@@ -99,7 +99,6 @@ def main():
     print('bleu scores')
     for model, domain_bleu_scores in model_domain_bleu_scores.items():
         avg_bleu = get_average(list(domain_bleu_scores.values()))
-        print(avg_bleu)
         length_raio=[]
         cur_length_ratio = model_length_ratio[model]
         ratio_mean = round(statistics.mean(cur_length_ratio), 1)
@@ -107,6 +106,8 @@ def main():
             if ratio < 0.2 or ratio > 2.0:
                 length_raio.append((index,ratio))
         print(f"{model}: {avg_bleu:.2f}, out_of_range_count={len(length_raio)}, duplicate={sum(model_duplicated[model])}")
+        for domain in domain_bleu_scores:
+            print(f'\t{domain}: {domain_bleu_scores[domain]}')
         if args.detail:
             print(f'\t error length:{length_raio}')
         if args.detail:
