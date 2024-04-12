@@ -1,13 +1,10 @@
-import os
-import json
-from collections import defaultdict
-from nltk.translate.bleu_score import corpus_bleu
-import statistics
 import argparse
-import json
 import os
 import re
-from collections import Counter
+
+from collections import defaultdict, Counter
+from utils.file_handler import load_json
+
 
 def is_duplicated(text, top_k=10, min_word_len=0):
     words = re.findall(r'\b\w+\b', text)
@@ -48,12 +45,44 @@ def is_duplicated(text, top_k=10, min_word_len=0):
     return False
 
 def is_length_exceed(reference, generation, min_ratio=0.2, max_ratio=2):
-    return not min_ratio <= (len(generation) / len(reference)) <= max_ratio
+    return not (min_ratio <= (len(generation) / len(reference)) <= max_ratio)
 
 def get_average(a):
-    if isinstance(a, list):
-        return round(sum(a) / len(a), 2)
-    return a
+    return round(sum(a) / len(a), 2)
+
+
+# 모델, 요소별로 평가
+def eval_criteria(json_data, eval_dict, criteria):
+    for data in json_data:
+        model = data['model']
+        eval_dict[model]['average'] = []
+        element = data[criteria]
+        bleu_score = data['bleu']
+        eval_dict[model][element].append(bleu_score)
+    
+    # 요소별 평균 및 전체 평균 집계
+    for element in eval_dict[model]:
+        if element == 'average':
+            continue
+        eval_dict[model]['average'] += eval_dict[model][element]
+        eval_dict[model][element] = get_average(eval_dict[model][element])
+    eval_dict[model]['average'] = get_average(eval_dict[model]['average'])
+
+
+# length_exceeds, duplicate 평가
+def eval_problem(json_data, model_length_exceeds, model_duplicated):
+    model = json_data[0]['model']
+    model_length_exceeds[model] = []
+    model_duplicated[model] = []
+    for index, data in enumerate(json_data):
+        # check_length
+        if is_length_exceed(data['reference'], data['generation']):
+            model_length_exceeds[model].append({'index': index, 'ratio': round(len(data['generation']) / len(data['reference']), 2)})
+
+        # check duplication
+        word_count = is_duplicated(data['generation'])
+        if word_count:
+            model_duplicated[model].append({'index':index, 'count':word_count})
 
 
 def main():
@@ -66,51 +95,54 @@ def main():
     parser.add_argument('--detail', action='store_true', help='detail')
     args = parser.parse_args()
     
-    # 각 파일별로 src에 대한 bleu 점수를 저장할 딕셔너리
-    file_src_bleu_scores = defaultdict(list)
-    file_length_ratio = defaultdict(list)
-    file_duplicated = defaultdict(list)
-    file_duplicated_detail = defaultdict(list)
-    # 디렉토리 내의 모든 파일에 대해 반복
+    criteria_list = [
+        'length',
+        'domain',
+        'src',
+    ]
+    model_bleu_scores = defaultdict(lambda: defaultdict(list))
+    model_length_exceeds = defaultdict(list)
+    model_duplicated = defaultdict(list)
+
+    # 집계
     for filename in os.listdir(args.directory):
-        if filename.endswith('.jsonl'):  # JSONL 파일인 경우에만 처리
-            file_path = os.path.join(args.directory, filename)
-            with open(file_path, 'r', encoding='utf-8') as file:
-                for index, line in enumerate(file):
-                    data = json.loads(line)
-                    src = data['src']
-                    bleu_score = data['bleu']
-                    file_src_bleu_scores[filename].append(bleu_score)
+        if not filename.endswith('.jsonl'): # JSONL 파일인 경우에만 처리
+            continue
 
-                    # check_length
-                    reference_length = len(data['reference'])
-                    generation_length = len(data['generation'])
-                    file_length_ratio[filename].append(round(generation_length / reference_length, 1))
+        file_path = os.path.join(args.directory, filename)
+        json_data = load_json(file_path)
+        for criteria in criteria_list:
+            if criteria not in json_data[0]:
+                continue
+            cur_criteria = criteria
+            eval_criteria(json_data, model_bleu_scores, criteria)
+            eval_problem(json_data, model_length_exceeds, model_duplicated)
+            break
 
-                    # check duplication
-                    word_count = is_duplicated(data['generation'])
-                    file_duplicated[filename].append(0 if word_count is False else 1)
-                    if word_count != False:
-                        file_duplicated_detail[filename].append({'index':index, 'count':word_count,'generation':data['generation']})
+    # 출력
+    print(f'{cur_criteria} per model')
+    sorted_model = dict(sorted(model_bleu_scores.items(), key=lambda x: x[1]['average']))
+    for model in sorted_model:
+        bleu_scores = sorted_model[model]
+        length_exceeds = model_length_exceeds[model]
+        duplication = model_duplicated[model]
+        if not args.detail:
+            print(f"***{model}: {bleu_scores['average']:.2f}, out_of_range_count={len(length_exceeds)}, duplicate={len(duplication)}")
+        else:
+            print(f'\n***{model}')
+            print(f'average: {bleu_scores["average"]}')
+            print(f'per {cur_criteria}')
+            for criteria in bleu_scores:
+                print(f' - {criteria}: {bleu_scores[criteria]}')
+            print(f'length exceeds: {len(length_exceeds)}')
+            if length_exceeds:
+                for exceed in length_exceeds:
+                    print(f' - {exceed}')
+            print(f'duplication: {len(duplication)}')
+            if duplication:
+                for dup in duplication:
+                    print(f' - {dup}')
 
-    sorted_items = sorted(file_src_bleu_scores.items(), key=lambda x: statistics.mean(x[1]))
-    # 각 파일별로 src에 대한 bleu 평균 계산
-    print('bleu scores')
-    for filename, src_bleu_scores in sorted_items:
-        avg_bleu = sum(src_bleu_scores) / len(src_bleu_scores)
-        length_raio=[]
-        cur_length_ratio = file_length_ratio[filename]
-        ratio_mean = round(statistics.mean(cur_length_ratio), 1)
-        for index, ratio in enumerate(cur_length_ratio):
-            if ratio < 0.2 or ratio > 2.0:
-                length_raio.append((index,ratio))
-        print(f"{filename}: {avg_bleu:.2f}, out_of_range_count={len(length_raio)}, duplicate={sum(file_duplicated[filename])}")
-        if args.detail:
-            print(f'\t error length:{length_raio}')
-        if args.detail:
-            print(f"\t duplication")
-            for info in file_duplicated_detail[filename]:
-                print('\t\t', info)
 
 if __name__ == "__main__":
     main()

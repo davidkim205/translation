@@ -6,13 +6,13 @@ from create_table import create
 
 # 테이블 업데이트
 def refresh():
-    table1, table2, table3 = create()
-    return table1, table2, table3
+    table1, table2, table3, table4 = create()
+    return table1, table2, table3, table4
 
 
 with gr.Blocks() as demo:
     # 테이블 초기화
-    table1, table2, table3 = create()
+    bleu_and_sbleu, bleu_by_domain, bleu_by_src, bleu_by_length = create()
     with gr.Row():
         gr.Markdown(
             """
@@ -36,16 +36,25 @@ with gr.Blocks() as demo:
     with gr.Row():
         with gr.Tab("bleu and sbleu"):
             with gr.Group():
-                table1 = gr.Dataframe(value=table1, datatype="html")
+                bleu_and_sbleu = gr.Dataframe(value=bleu_and_sbleu, datatype="html")
                 with gr.Accordion("Show Chart", open=False):
                     gr.Image(
                         "assets/plot-bleu.png",
                         show_download_button=False,
                         container=False,
                     )
+        with gr.Tab("bleu by domain"):
+            with gr.Group():
+                bleu_by_domain = gr.Dataframe(value=bleu_by_domain, datatype="html")
+                # with gr.Accordion("Show Chart", open=False):
+                #     gr.Image(
+                #         "assets/plot-bleu.png",
+                #         show_download_button=False,
+                #         container=False,
+                #     )
         with gr.Tab("bleu by src"):
             with gr.Group():
-                table2 = gr.Dataframe(value=table2, datatype="html")
+                bleu_by_src = gr.Dataframe(value=bleu_by_src, datatype="html")
                 with gr.Accordion("Show Chart", open=False):
                     gr.Image(
                         "assets/plot-bleu-by-src.png",
@@ -54,7 +63,7 @@ with gr.Blocks() as demo:
                     )
         with gr.Tab("bleu by sentence length"):
             with gr.Group():
-                table3 = gr.Dataframe(value=table3, datatype="html")
+                bleu_by_length = gr.Dataframe(value=bleu_by_length, datatype="html")
                 with gr.Accordion("Show Chart", open=False):
                     gr.Image(
                         "assets/plot-bleu-by-sentence-length.png",
@@ -63,6 +72,6 @@ with gr.Blocks() as demo:
                     )
 
     refresh_btn = gr.Button(value="Refresh")
-    refresh_btn.click(refresh, outputs=[table1, table2, table3])
+    refresh_btn.click(refresh, outputs=[bleu_and_sbleu, bleu_by_domain, bleu_by_src, bleu_by_length])
 
 demo.launch(server_name='0.0.0.0', share=True)

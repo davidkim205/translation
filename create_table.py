@@ -2,122 +2,110 @@ import os
 import pandas as pd
 
 from collections import defaultdict
-from evaluate import is_duplicated, is_length_exceed, get_average
+from evaluate import eval_criteria, eval_problem
 from utils.decorate import cloud_model, decorate_model_name
 from utils.file_handler import load_json
 
 
-# results_bleu/에서 집계
-def aggregate_bleu(json_data, bleu_table, src_table, length_table):
-    duplicate_count = defaultdict(int)
-    length_exceeds_count = defaultdict(int)
-
-    for data in json_data:
-        src_table[data["model"]]["Average"].append(data["bleu"])
-        src_table[data["model"]][data["src"]].append(data["bleu"])
-        if is_duplicated(data["generation"]):
-            duplicate_count[data["model"]] += 1
-        if is_length_exceed(data["reference"], data["generation"]):
-            length_exceeds_count[data["model"]] += 1
-    for model, row in src_table.items():
-        src_table[model] = dict((attr, get_average(val)) for attr, val in row.items())
-
-    # bleu, duplicate, length exceeds 추가
-    for model in src_table:
-        bleu_table[model]["Average"].append(src_table[model]["Average"])
-        bleu_table[model]["Bleu"] = src_table[model]["Average"]
-        bleu_table[model]["Duplicate"] = duplicate_count[model]
-        bleu_table[model]["Length Exceeds"] = length_exceeds_count[model]
-
-
-# results_self/에서 집계
-def aggregate_self(json_data, bleu_table, src_table, length_table):
-    sbleu_score = defaultdict(list)
-    for data in json_data:
-        sbleu_score[data["model"]].append(data["bleu"])
-
-    # sbleu 추가
-    for model in sbleu_score:
-        bleu_table[model]["SBleu"] = get_average(sbleu_score[model])
-        bleu_table[model]["Average"].append(bleu_table[model]["SBleu"])
-
-
-# results_length/에서 집계
-def aggregate_length(json_data, bleu_table, src_table, length_table):
-    for data in json_data:
-        length_table[data["model"]]["Average"].append(data["bleu"])
-        length_table[data["model"]][f"~{data['length']}"].append(data["bleu"])
-    for model, row in length_table.items():
-        length_table[model] = dict(
-            (attr, get_average(val)) for attr, val in row.items()
-        )
-
-    # bleu-sl 추가
-    for model in length_table:
-        bleu_table[model]["Bleu-SL"] = length_table[model]["Average"]
-        bleu_table[model]["Average"].append(bleu_table[model]["Bleu-SL"])
-        bleu_table[model]["Average"] = get_average(bleu_table[model]["Average"])
-
-
-def create():
-    results_dirs = {
-        "results_bleu/": aggregate_bleu,
-        "results_self/": aggregate_self,
-        "results_length/": aggregate_length,
+def aggregate(criteria):
+    dir_per_criteria = {
+        'domain': [
+            'results_domain_bleu/',
+            'results_domain_self/',
+        ],
+        'length': [
+            'results_length/',
+        ],
+        'src': [
+            'results_src_bleu/',
+            'results_src_self/',
+        ]
     }
-
-    bleu_table = defaultdict(lambda: defaultdict(list))
-    src_table = defaultdict(lambda: defaultdict(list))
-    length_table = defaultdict(lambda: defaultdict(list))
-    tables = {
-        "bleu_and_sbleu": bleu_table,
-        "bleu_by_src": src_table,
-        "bleu_by_length": length_table,
-    }
-
-    # bleu score 집계
-    for dir, aggregate in results_dirs.items():
-        json_data = []
+    results = []
+    for dir in dir_per_criteria[criteria]:
+        model_bleu_scores = defaultdict(lambda: defaultdict(list))
+        model_length_exceeds = defaultdict(list)
+        model_duplicated = defaultdict(list)
         for filename in os.listdir(dir):
-            if not filename.endswith(".jsonl"):
+            if not filename.endswith('.jsonl'): # JSONL 파일인 경우에만 처리
                 continue
-            file_path = os.path.join(dir, filename)
-            json_data += load_json(file_path)
-        aggregate(json_data, *tables.values())
 
-    # table dataframe 생성
-    for table in tables:
-        df = pd.DataFrame.from_dict(tables[table], orient="index")
-        if table == "bleu_and_sbleu":
-            df["Duplicate"] = df.pop("Duplicate")
-            df["Length Exceeds"] = df.pop("Length Exceeds")
+            file_path = os.path.join(dir, filename)
+            json_data = load_json(file_path)
+            eval_criteria(json_data, model_bleu_scores, criteria)
+            eval_problem(json_data, model_length_exceeds, model_duplicated)
+        for model in model_duplicated:
+            model_duplicated[model] = len(model_duplicated[model])
+            model_length_exceeds[model] = len(model_length_exceeds[model])
+    
+        duplicated = pd.DataFrame.from_dict(model_duplicated, orient='index', columns=['Duplicate'])
+        length_exceeds = pd.DataFrame.from_dict(model_length_exceeds, orient='index', columns=['Length Exceeds'])
+        df = pd.DataFrame.from_dict(model_bleu_scores, orient='index')
+        df = df.join(duplicated)
+        df = df.join(length_exceeds)
+        df.rename(columns={'average': 'Average'}, inplace=True)
         df.reset_index(inplace=True, names="Model")
         df["Model"] = list(map(decorate_model_name, df["Model"]))
         df.insert(
             0,
             "Type",
             list(
-                map(
-                    lambda x: "Cloud" if x in cloud_model else "HuggingFace",
-                    df["Model"],
-                )
+                map(lambda x: "Cloud" if x in cloud_model else "HuggingFace",
+                df["Model"])
             ),
         )
         df.insert(
             0, "Rank", df["Average"].rank(method="min", ascending=False).astype(int)
         )
-        df = df.sort_values(by="Rank")
-        tables[table] = df
+        # df = df.sort_values(by="Rank")
+        results.append(df)
+    return results
 
-    return tables.values()
+
+def create():
+    criteria_list = [
+        'domain',
+        'src',
+        'length',
+    ]
+    bleu_tables = []
+    sbleu_tables = []
+    for criteria in criteria_list:
+        results = aggregate(criteria)
+        bleu_tables.append(results[0])
+        if criteria != 'length':
+            sbleu_tables.append(results[1])
+    bleu_and_sbleu = bleu_tables[0][['Type', 'Model', 'Average']].copy()
+    bleu_and_sbleu.rename(columns={'Average': 'Bleu'}, inplace=True)
+
+    
+    sbleu_score = sbleu_tables[0][['Average']].copy()
+    sbleu_score.rename(columns={'Average': 'SBleu'}, inplace=True)
+    bleu_and_sbleu = bleu_and_sbleu.join(sbleu_score)
+
+    bleu_sl_score = bleu_tables[2][['Average']].copy()
+    bleu_sl_score.rename(columns={'Average': 'Bleu-SL'}, inplace=True)
+    bleu_and_sbleu = bleu_and_sbleu.join(bleu_sl_score)
+
+    problem = bleu_tables[0][['Duplicate', 'Length Exceeds']].copy()
+    bleu_and_sbleu = bleu_and_sbleu.join(problem)
+    bleu_and_sbleu['Average'] = bleu_and_sbleu[['Bleu', 'SBleu', 'Bleu-SL']].mean(axis=1).round(2)
+    bleu_and_sbleu.insert(2, 'Average', bleu_and_sbleu.pop('Average'))
+    bleu_and_sbleu.insert(
+            0, "Rank", bleu_and_sbleu["Average"].rank(method="min", ascending=False).astype(int)
+        )
+    bleu_tables.insert(0, bleu_and_sbleu)
+    bleu_tables = list(map(lambda x: x.sort_values(by='Rank'), bleu_tables))
+    return bleu_tables
 
 
 def main():
-    tables = list(create())
-    print("# dataframe")
-    print(tables[0], "\n\n")
-    print("# markdown")
-    print(tables[0].to_markdown(index=False))
+    tables = create()
+    for table in tables:
+        print("\n==============\n - ***DF!")
+        print(table)
+        print('\n - ***markdown!')
+        print(table.to_markdown())
 
 
 if __name__ == "__main__":
