@@ -1,4 +1,4 @@
-cloud_model = {"google", "papago", "deepl", "azure"}
+cloud_model = {"google", "papago", "deepl", "microsoft"}
 
 
 def decorate_model_name(model):
